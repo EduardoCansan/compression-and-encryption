@@ -37,16 +37,15 @@ def handle_action(action: str):
 
 
 def main():
-    while True:
-        show_main_menu()
-        option = input("Enter the option: ").strip()
+    show_main_menu()
+    option = input("Enter the option: ").strip()
 
-        if option == "1":
-            handle_action("Encode")
-        elif option == "2":
-            handle_action("Decode")
-        else:
-            console.print("[bold red]Invalid option![/bold red]")
+    if option == "1":
+        handle_action("Encode")
+    elif option == "2":
+        handle_action("Decode")
+    else:
+        console.print("[bold red]Invalid option![/bold red]")
 
 
 if __name__ == "__main__":
