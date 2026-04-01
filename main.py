@@ -2,8 +2,8 @@
 from rich.console import Console
 from rich.table import Table
 
-# import the methods 
-# from golomb import Golomb
+# import the methods
+from logic.golomb import Golomb
 # from elias_gamma import EliasGamma
 from logic.fibonacci import Fibonacci
 # from huffman import Huffman
@@ -12,7 +12,7 @@ console = Console()
 
 METHODS: dict[str, type] = {
     "1": Fibonacci,
-    # "2": Golomb,
+    "2": Golomb,
     # "3": EliasGamma,
     # "4": Huffman,
 }
