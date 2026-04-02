@@ -1,6 +1,6 @@
 class Fibonacci:
 
-    # transform char into decimal in ASCII table
+    # transform char into decimal in ASCII table - EX: A = 65
     @staticmethod
     def _text_to_decimals(text: str) -> list[int]:
         return [ord(char) for char in text]
@@ -48,6 +48,26 @@ class Fibonacci:
 
         return ''.join(str(encode) for encode in encodes)
 
-    @classmethod
-    def decode(cls, bits: str) -> str:
-        return 0
+    @staticmethod
+    def split_codewords(bits: str) -> list[str]:
+        codeword_list = []
+        buffer = []
+
+        for i, bit in enumerate(bits):
+            buffer.append(bit)
+            if i > 0 and bit == '1' and bits[i-1] == '1' and len(buffer) > 1:
+                codeword_list.append(''.join(buffer))
+                buffer = []
+        return codeword_list 
+    
+    #@staticmethod
+    #def _fibonacci_decode(bits: str) -> str:
+    
+    #@classmethod
+    #def decode(cls, bits: str) -> str:
+        #return 0
+    
+
+if __name__ == "__main__":
+    resultado = Fibonacci.split_codewords("0110111011")
+    print(resultado)
