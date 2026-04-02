@@ -1,4 +1,5 @@
 class Fibonacci:
+#! ENCODE
 
     # transform char into decimal in ASCII table - EX: A = 65
     @staticmethod
@@ -48,6 +49,8 @@ class Fibonacci:
 
         return ''.join(str(encode) for encode in encodes)
 
+#! DECODE
+
     @staticmethod
     def split_codewords(bits: str) -> list[str]:
         codeword_list = []
@@ -60,14 +63,38 @@ class Fibonacci:
                 buffer = []
         return codeword_list 
     
-    #@staticmethod
-    #def _fibonacci_decode(bits: str) -> str:
-    
+    @staticmethod
+    def _fibonacci_decode(codeword: str) -> int: #convert codeword to decimal
+        bits = codeword[:-1]
+        N = len(bits)
+
+        fibs = [1,2]
+        while len(fibs) < N:
+            nxt = fibs[-1] + fibs[-2]
+            fibs.append(nxt)
+
+        total = 0
+        for i, bit in enumerate(bits):
+            if bit == '1':
+                total += fibs[i]
+        
+        return total
+        #*fibs — lista dos números fibonacci gerados
+        #*bits — a string do codeword sem o stop bit
+        #*bit — o caractere atual ('0' ou '1') em cada iteração
+        #*fibs[i] — o fibonacci correspondente àquela posição
+        
     #@classmethod
     #def decode(cls, bits: str) -> str:
         #return 0
     
+# TESTES
+# if __name__ == "__main__":
+#     resultado = Fibonacci.split_codewords("0110111011")
+#     print(resultado)
 
-if __name__ == "__main__":
-    resultado = Fibonacci.split_codewords("0110111011")
-    print(resultado)
+# if __name__ == "__main__":
+#     encoded = Fibonacci._fibonacci_encode(65)
+#     print(f"encoded: {encoded}")
+#     decoded = Fibonacci._fibonacci_decode(encoded)
+#     print(f"decoded: {decoded}")  # deve dar 65
