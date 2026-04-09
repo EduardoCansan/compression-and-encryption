@@ -25,14 +25,14 @@ METHOD_NAMES = {
 }
 
 METHOD_HINTS = {
-    ("1", "Encode"): "Enter text — letters, numbers and symbols are accepted as characters (ex: hello or 123): ",
-    ("1", "Decode"): "Enter a Fibonacci encoded binary string (ex: 11011010): ",
-    ("2", "Encode"): "Enter a positive integer (ex: 10): ",
-    ("2", "Decode"): "Enter a Golomb encoded binary string (ex: 11011010): ",
-    ("3", "Encode"): "Enter a non-zero positive integer (ex: 7): ",
-    ("3", "Decode"): "Enter an Elias-Gamma encoded binary string (ex: 11011010): ",
-    ("4", "Encode"): "Enter text to compress (ex: hello world): ",
-    ("4", "Decode"): "Enter a Huffman encoded binary string (ex: 11011010): ",
+    ("1", "Encode"): "\nEnter text — letters, numbers and symbols are accepted as characters (ex: hello or 123): ",
+    ("1", "Decode"): "\nEnter a Fibonacci encoded binary string (ex: 11011010): ",
+    ("2", "Encode"): "\nEnter a positive integer (ex: 10): ",
+    ("2", "Decode"): "\nEnter a Golomb encoded binary string (ex: 11011010): ",
+    ("3", "Encode"): "\nEnter a non-zero positive integer (ex: 7): ",
+    ("3", "Decode"): "\nEnter an Elias-Gamma encoded binary string (ex: 11011010): ",
+    ("4", "Encode"): "\nEnter text to compress (ex: hello world): ",
+    ("4", "Decode"): "\nFormat: a:0 b:10 n:11|100110110 (ex: banana)\nEnter a Huffman encoded binary string: ",
 }
 
 def show_main_menu():
@@ -62,7 +62,6 @@ def handle_action(action: str):
     method_class = METHODS[choice]
     hint = METHOD_HINTS.get((choice, action), "Enter input: ")
     text = input(hint).strip()
-    console.print(f"\n[bold green]{action}ing with {name}...[/bold green]")
 
     try:
         if action == "Encode":
@@ -70,7 +69,7 @@ def handle_action(action: str):
         else:
             result = method_class.decode(text)
         if result is not None:
-            console.print(f"Result: {result}")
+            console.print(f"\n[default]Result: {result}[/default]")
     except NotImplementedError as e:
         console.print(f"\n[yellow]{e}[/yellow]")
 

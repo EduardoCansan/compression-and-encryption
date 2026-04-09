@@ -8,19 +8,21 @@ class Huffman:
     def encode(text: str) -> str:
         root, table = Huffman._build_tree(text)
 
-        bits = "".join(table[c] for c in text)
+        bits = "".join(table[char] for char in text)
 
-        # Store the table alongside bits so decode can work standalone
-        # Format: "a:0,b:10,n:11|100110110"
-        table_str = ",".join(f"{c}:{code}" for c, code in table.items())
-        return f"{table_str}|{bits}"
+        # Format: "a:0 b:10 n:11|100110110" (example: banana)
+        table_str = ",".join(f"{char}:{code}" for char, code in table.items())
+        return f"{table_str} | {bits}"
 
     @staticmethod
     def decode(encoded: str) -> str:
         if "|" not in encoded:
             raise ValueError("Invalid Huffman string. Expected format: table|bits")
 
+        # Way to write the code in the terminal to DECODE
         table_str, bits = encoded.split("|", 1)
+        table_str = table_str.strip()
+        bits = bits.strip()
 
         # Rebuild reverse table: code → char
         reverse_table = {}
