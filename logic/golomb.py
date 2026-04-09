@@ -13,10 +13,11 @@ class Golomb:
                 break
             print("entrada invalalida.")
 
+        results = [] #results no lugar do print
         while True:
             #* Inputs: simbolo
             entrada_simbolo = int(symbol_str)
-            if entrada_simbolo < 0:
+            if entrada_simbolo <= 0:
                 raise ValueError("entrada invalalida.")
 
             #* dividindo o simbolo pelo divisor K
@@ -34,12 +35,13 @@ class Golomb:
             #* sufixo = resto convertido para binario com num_bits digitos
             sufixo = format(resto, f'0{num_bits}b')
 
-            print(unario + sufixo)
+            results.append(unario + sufixo) #results no lugar do print
 
             continuar = input("deseja codificar outro simbolo? (s/n): ")
             if continuar.lower() != 's':
                 break
             symbol_str = input("simbolo: ")
+        return "\n".join(results) #results no lugar do print
 
     @classmethod
     def decode(cls, codeword_str: str) -> str:
@@ -52,6 +54,7 @@ class Golomb:
                 break
             print("entrada invalalida.")
 
+        results = [] #results no lugar do print
         while True:
             #* Inputs: bits
             entrada_codeword = codeword_str
@@ -81,9 +84,10 @@ class Golomb:
             #* R = resto (sufixo convertido de binario para decimal)
             Num = q * entrada_divisor_decode + R
 
-            print(Num)
+            results.append(str(Num)) #results no lugar do print
 
             continuar = input("deseja decodificar outro codeword? (s/n): ")
             if continuar.lower() != 's':
                 break
             codeword_str = input("codeword: ")
+        return "\n".join(results) #results no lugar do print

@@ -4,6 +4,7 @@ class EliasGamma:
     @classmethod
     def encode(cls, symbol_str: str) -> str:
         #! CODIFICACAO
+        results = [] #results no lugar do print
         while True:
             #* Inputs: simbolo
             entrada_simbolo = int(symbol_str)
@@ -15,15 +16,17 @@ class EliasGamma:
             unario = '0' * k + '1'
             #* sufixo = N em binario com k bits, sem o bit mais significativo
             sufixo = format(entrada_simbolo, f'0{k+1}b')[1:]
-            print(unario + sufixo)
+            results.append(unario + sufixo) #results no lugar do print
             continuar = input("deseja codificar outro simbolo? (s/n): ")
             if continuar.lower() != 's':
                 break
             symbol_str = input("simbolo: ")
+        return "\n".join(results) #results no lugar do print
 
     @classmethod
     def decode(cls, codeword_str: str) -> str:
         #! DECODIFICACAO
+        results = [] #results no lugar do print
         while True:
             #* Inputs: bits
             entrada_codeword = codeword_str
@@ -45,8 +48,9 @@ class EliasGamma:
             #* 2^k = bit mais significativo que foi removido no encode
             #* int(sufixo, 2) = valor do sufixo em decimal
             N = 2**k + (int(sufixo, 2) if sufixo else 0)
-            print(N)
+            results.append(str(N)) #results no lugar do print
             continuar = input("deseja decodificar outro codeword? (s/n): ")
             if continuar.lower() != 's':
                 break
             codeword_str = input("codeword: ")
+        return "\n".join(results) #results no lugar do print
