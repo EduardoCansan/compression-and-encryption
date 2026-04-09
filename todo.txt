@@ -8,7 +8,7 @@
         • Elias-Gamma
         • Fibonacci/Zeckendorf
         • Huffman
-3. Validação de Entrada ❌
+3. Validação de Entrada ⚠️ - Falta Fibonacci
     O sistema deve validar a entrada do usuário, garantindo que ela seja compatível
     com os métodos de codificação implementados.
     Por exemplo:
