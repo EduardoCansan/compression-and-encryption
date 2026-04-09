@@ -6,7 +6,7 @@ from rich.table import Table
 from logic.golomb import Golomb
 from logic.elias_gamma import EliasGamma
 from logic.fibonacci import Fibonacci
-# from huffman import Huffman
+from logic.huffman import Huffman
 
 console = Console()
 
@@ -14,7 +14,7 @@ METHODS: dict[str, type] = {
     "1": Fibonacci,
     "2": Golomb,
     "3": EliasGamma,
-    # "4": Huffman,
+    "4": Huffman,
 }
 
 METHOD_NAMES = {
