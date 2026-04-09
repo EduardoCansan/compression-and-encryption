@@ -67,9 +67,9 @@ def handle_action(action: str):
     try:
         if action == "Encode":
             result = method_class.encode(text)
-            console.print(f"Result: {result}")
         else:
             result = method_class.decode(text)
+        if result is not None:
             console.print(f"Result: {result}")
     except NotImplementedError as e:
         console.print(f"\n[yellow]{e}[/yellow]")
