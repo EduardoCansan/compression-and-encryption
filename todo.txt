@@ -1,7 +1,7 @@
-1. Entrada de Símbolos ❌
+1. Entrada de Símbolos ✅
     O sistema deve permitir ao usuário inserir um ou mais símbolos (em formato textual
     ou numérico) para serem codificados.
-2. Seleção do Método de Codificação ❌
+2. Seleção do Método de Codificação ✅
     O sistema deve oferecer ao usuário a opção de escolher entre os seguintes métodos
     de codificação:
         • Golomb
@@ -15,16 +15,16 @@
         • Golomb: entrada deve ser número inteiro positivo
         • Elias-Gamma: entrada deve ser inteiro positivo não-nulo
         • Huffman: entrada pode ser string com alfabeto definido
-4. Codificação ❌
+4. Codificação ✅
     O sistema deve ser capaz de codificar os símbolos inseridos com base no método
     selecionado pelo usuário.
 5. Inserção de erro ❌
     O sistema deve permitir a inserção de erro em bits, seja manualmente (hardcoded)
     ou por meio de entrada do usuário via teclado, com o objetivo de testar os métodos
     de Codificação.
-6. Decodificação ❌
+6. Decodificação ✅
     O sistema deve ser capaz de decodificar os codeword (binários) inseridos com base
     no método selecionado pelo usuário.
-7. Exibição do Resultado ❌
+7. Exibição do Resultado ✅
     O sistema deve exibir o código resultante na tela após a codificação e a
     decodificação.
