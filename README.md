@@ -1,5 +1,7 @@
 # 📦 Compression and 🔐 Cryptography
 
+## **Integrantes do Grupo:** Gustavo Mezomo, Pedro Gustavo Thomas, Eduardo Cansan
+
 This repository introduces fundamental concepts of **Data Compression** and **Cryptography**, along with Python implementations of classic encoding and decoding techniques.
 
 The goal is to provide a simple theoretical foundation before exploring the implemented code.
