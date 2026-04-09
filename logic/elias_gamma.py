@@ -20,7 +20,33 @@ class EliasGamma:
             if continuar.lower() != 's':
                 break
             symbol_str = input("simbolo: ")
-    
-    @classmethod #temporario, enquanto decode nao esta feito, para nao quebrar o main
-    def decode():
-        return 0
+
+    @classmethod
+    def decode(cls, codeword_str: str) -> str:
+        #! DECODIFICACAO
+        while True:
+            #* Inputs: bits
+            entrada_codeword = codeword_str
+            caracteres_permitidos = set("01")
+            valido = all(c in caracteres_permitidos for c in entrada_codeword)
+            if not valido:
+                raise ValueError("entrada invalida.")
+            #* decodificar o prefixo (unario)
+            #* k = contador de zeros ate o stopbit
+            k = 0
+            for i in entrada_codeword:
+                if i == '0':
+                    k += 1
+                else:
+                    break
+            #* sufixo = k bits apos o stopbit
+            sufixo = entrada_codeword[k+1:k+1+k]
+            #* reconstruindo o numero original
+            #* 2^k = bit mais significativo que foi removido no encode
+            #* int(sufixo, 2) = valor do sufixo em decimal
+            N = 2**k + (int(sufixo, 2) if sufixo else 0)
+            print(N)
+            continuar = input("deseja decodificar outro codeword? (s/n): ")
+            if continuar.lower() != 's':
+                break
+            codeword_str = input("codeword: ")
