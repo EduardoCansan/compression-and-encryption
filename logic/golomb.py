@@ -8,16 +8,16 @@ class Golomb:
 
         #* K perguntado uma vez, antes do loop
         while True:
-            entrada_divisor = int(input("digite o divisor (K) - somente pontencia de 2: "))
+            entrada_divisor = int(input("enter the divisor (K) - powers of 2 only: "))
             if entrada_divisor >= 1 and (entrada_divisor & (entrada_divisor - 1)) == 0: #somentes numeros em potencia de 2
                 break
-            print("entrada invalalida.")
+            print("invalid input.")
 
         while True:
             #* Inputs: simbolo
             entrada_simbolo = int(symbol_str)
             if entrada_simbolo < 0:
-                raise ValueError("entrada invalalida.")
+                raise ValueError("invalid input.")
 
             #* dividindo o simbolo pelo divisor K
             #* quociente = numero de zeros no prefixo
@@ -36,10 +36,10 @@ class Golomb:
 
             print(unario + sufixo)
 
-            continuar = input("deseja codificar outro simbolo? (s/n): ")
-            if continuar.lower() != 's':
+            continuar = input("do you want to encode another symbol? (y/n): ")
+            if continuar.lower() != 'y':
                 break
-            symbol_str = input("simbolo: ")
+            symbol_str = input("symbol: ")
 
     @classmethod
     def decode(cls, codeword_str: str) -> str:
@@ -47,10 +47,10 @@ class Golomb:
 
         #* K perguntado uma vez, antes do loop
         while True:
-            entrada_divisor_decode = int(input("digite o divisor (K) - somente pontencia de 2: "))
+            entrada_divisor_decode = int(input("enter the divisor (K) - powers of 2 only: "))
             if entrada_divisor_decode >= 1 and (entrada_divisor_decode & (entrada_divisor_decode - 1)) == 0: #somentes numeros em potencia de 2
                 break
-            print("entrada invalalida.")
+            print("invalid input.")
 
         while True:
             #* Inputs: bits
@@ -58,7 +58,7 @@ class Golomb:
             caracteres_permitidos = set("01")
             valido = all(c in caracteres_permitidos for c in entrada_codeword)
             if not valido:
-                raise ValueError("entrada invalalida.")
+                raise ValueError("invalid input.")
 
             #* decodificar o prefixo (unario)
             #* q = contador = stopbit
@@ -83,7 +83,7 @@ class Golomb:
 
             print(Num)
 
-            continuar = input("deseja decodificar outro codeword? (s/n): ")
-            if continuar.lower() != 's':
+            continuar = input("do you want to decode another codeword? (y/n): ")
+            if continuar.lower() != 'y':
                 break
             codeword_str = input("codeword: ")

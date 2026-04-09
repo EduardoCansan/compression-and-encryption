@@ -25,14 +25,14 @@ METHOD_NAMES = {
 }
 
 METHOD_HINTS = {
-    ("1", "Encode"): "Enter text to encode — letters, numbers and symbols are accepted as characters (e.g. hello or 123): ",
-    ("1", "Decode"): "Enter a binary string (e.g. 11011010): ",
-    ("2", "Encode"): "Enter a positive integer and divisor m separated by space (e.g. 10 3): ",
-    ("2", "Decode"): "Enter a Golomb-encoded binary string: ",
-    ("3", "Encode"): "Enter a positive integer (e.g. 7): ",
-    ("3", "Decode"): "Enter an Elias-Gamma encoded binary string: ",
-    ("4", "Encode"): "Enter text to compress (e.g. hello world): ",
-    ("4", "Decode"): "Enter a Huffman-encoded binary string: ",
+    ("1", "Encode"): "Enter text — letters, numbers and symbols are accepted as characters (ex: hello or 123): ",
+    ("1", "Decode"): "Enter a Fibonacci encoded binary string (ex: 11011010): ",
+    ("2", "Encode"): "Enter a positive integer (ex: 10): ",
+    ("2", "Decode"): "Enter a Golomb encoded binary string (ex: 11011010): ",
+    ("3", "Encode"): "Enter a non-zero positive integer (ex: 7): ",
+    ("3", "Decode"): "Enter an Elias-Gamma encoded binary string (ex: 11011010): ",
+    ("4", "Encode"): "Enter text to compress (ex: hello world): ",
+    ("4", "Decode"): "Enter a Huffman encoded binary string (ex: 11011010): ",
 }
 
 def show_main_menu():
