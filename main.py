@@ -25,7 +25,7 @@ METHOD_NAMES = {
 }
 
 METHOD_HINTS = {
-    ("1", "Encode"): "Enter a sequence of positive integers separated by spaces (e.g. 1 3 5): ",
+    ("1", "Encode"): "Enter text to encode — letters, numbers and symbols are accepted as characters (e.g. hello or 123): ",
     ("1", "Decode"): "Enter a binary string (e.g. 11011010): ",
     ("2", "Encode"): "Enter a positive integer and divisor m separated by space (e.g. 10 3): ",
     ("2", "Decode"): "Enter a Golomb-encoded binary string: ",
