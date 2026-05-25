@@ -1,6 +1,9 @@
 import math
 
 class Golomb:
+    @staticmethod
+    def _text_to_decimals(text: str) -> list[int]:
+        return [ord(char) for char in text]
 
     @classmethod
     def encode(cls, symbol_str: str) -> str:
@@ -13,9 +16,10 @@ class Golomb:
                 break
             print("invalid input.")
 
-        while True:
-            #* Inputs: simbolo
-            entrada_simbolo = int(symbol_str)
+        decimal_text = cls._text_to_decimals(symbol_str)
+        encodes = []
+
+        for entrada_simbolo in decimal_text:
             if entrada_simbolo < 0:
                 raise ValueError("invalid input.")
 
@@ -34,12 +38,33 @@ class Golomb:
             #* sufixo = resto convertido para binario com num_bits digitos
             sufixo = format(resto, f'0{num_bits}b')
 
-            print(unario + sufixo)
+            encodes.append(unario + sufixo)
 
-            continuar = input("do you want to encode another symbol? (y/n): ")
-            if continuar.lower() != 'y':
+        return ''.join(encodes)
+
+    #* divide a string binária em codewords individuais
+    #* para o decode funcionar corretamente
+    @staticmethod
+    def split_codewords(bits: str, k: int) -> list[str]:
+        num_bits = int(math.log2(k))
+        codewords = []
+        i = 0
+        
+        while i < len(bits):
+            # Encontra o stopbit '1'
+            j = i
+            while j < len(bits) and bits[j] == '0':
+                j += 1
+            
+            if j < len(bits):  # Encontrou o stopbit
+                # codeword = prefixo (0's + stopbit 1) + sufixo (num_bits)
+                codeword = bits[i:j+1+num_bits]
+                codewords.append(codeword)
+                i = j + 1 + num_bits
+            else:
                 break
-            symbol_str = input("symbol: ")
+        
+        return codewords
 
     @classmethod
     def decode(cls, codeword_str: str) -> str:
@@ -52,14 +77,16 @@ class Golomb:
                 break
             print("invalid input.")
 
-        while True:
-            #* Inputs: bits
-            entrada_codeword = codeword_str
-            caracteres_permitidos = set("01")
-            valido = all(c in caracteres_permitidos for c in entrada_codeword)
-            if not valido:
-                raise ValueError("invalid input.")
+        #* Inputs: bits
+        caracteres_permitidos = set("01")
+        valido = all(c in caracteres_permitidos for c in codeword_str)
+        if not valido:
+            raise ValueError("invalid input.")
 
+        codewords = cls.split_codewords(codeword_str, entrada_divisor_decode)
+        chars = []
+
+        for entrada_codeword in codewords:
             #* decodificar o prefixo (unario)
             #* q = contador = stopbit
             q = 0
@@ -81,9 +108,6 @@ class Golomb:
             #* R = resto (sufixo convertido de binario para decimal)
             Num = q * entrada_divisor_decode + R
 
-            print(Num)
+            chars.append(chr(Num))
 
-            continuar = input("do you want to decode another codeword? (y/n): ")
-            if continuar.lower() != 'y':
-                break
-            codeword_str = input("codeword: ")
+        return ''.join(chars)
