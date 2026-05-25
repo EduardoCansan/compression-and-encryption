@@ -27,9 +27,9 @@ METHOD_NAMES = {
 METHOD_HINTS = {
     ("1", "Encode"): "\nEnter text — letters, numbers and symbols are accepted as characters (ex: hello or 123): ",
     ("1", "Decode"): "\nEnter a Fibonacci encoded binary string (ex: 11011010): ",
-    ("2", "Encode"): "\nEnter a positive integer (ex: 10): ",
+    ("2", "Encode"): "\nEnter text (letters) or positive integer (ex: 10): ",
     ("2", "Decode"): "\nEnter a Golomb encoded binary string (ex: 11011010): ",
-    ("3", "Encode"): "\nEnter a non-zero positive integer (ex: 7): ",
+    ("3", "Encode"): "\nEnter text (letters) or non-zero positive integer (ex: 7): ",
     ("3", "Decode"): "\nEnter an Elias-Gamma encoded binary string (ex: 11011010): ",
     ("4", "Encode"): "\nEnter text to compress (ex: hello world): ",
     ("4", "Decode"): "\nFormat: a:0 b:10 n:11|100110110 (ex: banana)\nEnter a Huffman encoded binary string: ",
