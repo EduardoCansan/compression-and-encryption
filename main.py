@@ -57,20 +57,37 @@ def handle_action(action: str):
         console.print("\n[bold red]Invalid option![/bold red]")
         return
 
-    name = METHOD_NAMES[choice]
-
     method_class = METHODS[choice]
     hint = METHOD_HINTS.get((choice, action), "Enter input: ")
     text = input(hint).strip()
 
     try:
-        if action == "Encode":
-            result = method_class.encode(text)
+        # Golomb precisa do divisor K
+        if choice == "2":
+            while True:
+                try:
+                    k = int(input("Digite o divisor (K) - apenas potencia de 2 : "))
+                    if k >= 1 and (k & (k - 1)) == 0:
+                        break
+                    console.print("\n[bold red]K precisa ser potencia de 2![/bold red]")
+                except ValueError:
+                    console.print("\n[bold red]Numero Invalido![/bold red]")
+
+            if action == "Encode":
+                result = method_class.encode(text, k)
+            else:
+                result = method_class.decode(text, k)
+
         else:
-            result = method_class.decode(text)
+            if action == "Encode":
+                result = method_class.encode(text)
+            else:
+                result = method_class.decode(text)
+
         if result is not None:
             console.print(f"\n[default]Result: {result}[/default]")
-    except NotImplementedError as e:
+
+    except (NotImplementedError, ValueError) as e:
         console.print(f"\n[yellow]{e}[/yellow]")
 
 def main():

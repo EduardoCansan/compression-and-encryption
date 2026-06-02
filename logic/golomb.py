@@ -6,15 +6,11 @@ class Golomb:
         return [ord(char) for char in text]
 
     @classmethod
-    def encode(cls, symbol_str: str) -> str:
+    def encode(cls, symbol_str: str, k : int) -> str:
         #! CODIFICACAO
 
-        #* K perguntado uma vez, antes do loop
-        while True:
-            entrada_divisor = int(input("enter the divisor (K) - powers of 2 only: "))
-            if entrada_divisor >= 1 and (entrada_divisor & (entrada_divisor - 1)) == 0: #somentes numeros em potencia de 2
-                break
-            print("invalid input.")
+        if k < 1 or (k & (k - 1)) != 0:
+            raise ValueError("K precisa ser potencia de 2")
 
         decimal_text = cls._text_to_decimals(symbol_str)
         encodes = []
@@ -25,15 +21,15 @@ class Golomb:
 
             #* dividindo o simbolo pelo divisor K
             #* quociente = numero de zeros no prefixo
-            quociente = entrada_simbolo // entrada_divisor
+            quociente = entrada_simbolo // k
             #* resto = valor que vira o sufixo
-            resto = entrada_simbolo % entrada_divisor
+            resto = entrada_simbolo % k
 
             #* Prefixo (unario) - + '1' = Stopbit
             unario = '0' * quociente + '1'
 
             #* quantidade de bits do sufixo = log2(K)
-            num_bits = int(math.log2(entrada_divisor))
+            num_bits = int(math.log2(k))
 
             #* sufixo = resto convertido para binario com num_bits digitos
             sufixo = format(resto, f'0{num_bits}b')
@@ -67,15 +63,11 @@ class Golomb:
         return codewords
 
     @classmethod
-    def decode(cls, codeword_str: str) -> str:
+    def decode(cls, codeword_str: str, k : int) -> str:
         #! DECODIFICACAO
 
-        #* K perguntado uma vez, antes do loop
-        while True:
-            entrada_divisor_decode = int(input("enter the divisor (K) - powers of 2 only: "))
-            if entrada_divisor_decode >= 1 and (entrada_divisor_decode & (entrada_divisor_decode - 1)) == 0: #somentes numeros em potencia de 2
-                break
-            print("invalid input.")
+        if k < 1 or (k & (k - 1)) != 0:
+            raise ValueError("K precisa ser potencia de 2")
 
         #* Inputs: bits
         caracteres_permitidos = set("01")
@@ -83,7 +75,7 @@ class Golomb:
         if not valido:
             raise ValueError("invalid input.")
 
-        codewords = cls.split_codewords(codeword_str, entrada_divisor_decode)
+        codewords = cls.split_codewords(codeword_str, k)
         chars = []
 
         for entrada_codeword in codewords:
@@ -106,7 +98,7 @@ class Golomb:
             #* q = quociente (numero de zeros no prefixo)
             #* entrada_divisor_decode = K (divisor)
             #* R = resto (sufixo convertido de binario para decimal)
-            Num = q * entrada_divisor_decode + R
+            Num = q * k + R
 
             chars.append(chr(Num))
 
