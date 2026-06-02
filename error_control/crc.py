@@ -28,7 +28,7 @@ class crc_generator:
         crc_com_bits = self.entrada + ("0" * bits_reservados)
         #Entrada + 0s:  1011000000
         
-        print("Entrada + 0s: ", crc_com_bits)
+        # print("Entrada + 0s: ", crc_com_bits)
         
         #10110
         bloco_atual = crc_com_bits[:len(self.gerador_crc)]
@@ -36,8 +36,8 @@ class crc_generator:
         #0
         i_proximo_bit = len(self.gerador_crc)
         
-        print(bloco_atual)
-        print(i_proximo_bit)
+        # print(bloco_atual)
+        # print(i_proximo_bit)
         
         while i_proximo_bit < len(crc_com_bits):
             if bloco_atual[0] == str("1"):
@@ -45,7 +45,7 @@ class crc_generator:
             else:
                 resultado = bloco_atual
             
-            while resultado[0] == str("0"):
+            while resultado[0] == str("0"): #! VERIFICAR, PODE QUEBRAR SE FOR SÓ 0s, 00000
                 resultado = resultado[1:]
             
             while len(resultado) < len(self.gerador_crc):
@@ -54,28 +54,34 @@ class crc_generator:
             
             bloco_atual = resultado
             
-            print("Bloco:", bloco_atual)
-            print("Indice:", i_proximo_bit)
+            # print("Bloco:", bloco_atual)
+            # print("Indice:", i_proximo_bit)
             
+        if len(bloco_atual) == len(self.gerador_crc):
+            resultado = self.funcao_xor(bloco_atual, self.gerador_crc)
+            while resultado[0] == str("0"): #! VERIFICAR, PODE QUEBRAR SE FOR SÓ 0s, 00000
+                resultado = resultado[1:]
+            bloco_atual = resultado
+            # print("bloco final: ", bloco_atual)
+        else: 
+            return bloco_atual
             
-            
-            
-             
-        
-        # res_xor = self.funcao_xor(Primeiro_bloco, self.gerador_crc)
-        # print("Resultado XOR: ", res_xor)
-        
-        # if res_xor[0] == str("0"):
-        #     novo_xor = res_xor[1:]
-        #     print("novo xor: ", novo_xor)
-        # else: 
-        #     print("xor normal, 1 no primeiro: ", res_xor)
-            
-            
-        
+        return bloco_atual
+
+    def gerar_mensagem_crc(self):
+        crc = self.calcular_crc()
+        resultado_mensagem = self.entrada + crc
+        return resultado_mensagem
+    
+    # def verificar_crc(self):
+    #     entrada_verf = self.gerar_mensagem_crc()
         
         
 #criado instacia da classe
 meu_crc = crc_generator()
-#chama funcao   
-meu_crc.calcular_crc()
+#chama funcao
+crc = meu_crc.calcular_crc()
+print("CRC FINAL: ", crc)
+
+msg = meu_crc.gerar_mensagem_crc()
+print("mensagem crc: ", msg)
