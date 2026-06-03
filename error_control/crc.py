@@ -1,8 +1,6 @@
 from operator import xor
 
 class crc_generator:
-    # Entrada fixa para testar
-    entrada = "101100" 
     gerador_crc = "10011"
     
     def funcao_xor(self, entrada, gerador_crc):
@@ -51,19 +49,19 @@ class crc_generator:
 
         return bloco_atual
 
-    def calcular_crc(self):
+    def calcular_crc(self, entrada):
         bits_reservados = len(self.gerador_crc) - 1
-        crc_com_bits = self.entrada + ("0" * bits_reservados)
+        crc_com_bits = entrada + ("0" * bits_reservados)
 
         return self.divisao_crc(crc_com_bits)
 
-    def gerar_mensagem_crc(self):
-        crc = self.calcular_crc()
-        resultado_mensagem = self.entrada + crc
+    def gerar_mensagem_crc(self, entrada):
+        crc = self.calcular_crc(entrada)
+        resultado_mensagem = entrada + crc
         return resultado_mensagem
 
-    def verificar_crc(self):
-        entrada_verf = self.gerar_mensagem_crc()
+    def verificar_crc(self, entrada):
+        entrada_verf = self.gerar_mensagem_crc(entrada)
 
         resultado = self.divisao_crc(entrada_verf)
 
@@ -76,13 +74,31 @@ class crc_generator:
         return resultado
 
 
-# criado instacia da classe
+# criado instacia da classe 101100
 meu_crc = crc_generator()
 
-crc = meu_crc.calcular_crc()
+crc = meu_crc.calcular_crc("101100")
 print("CRC FINAL:", crc)
 
-msg = meu_crc.gerar_mensagem_crc()
+msg = meu_crc.gerar_mensagem_crc("101100")
 print("mensagem crc:", msg)
 
-verificacao = meu_crc.verificar_crc()
+verificacao = meu_crc.verificar_crc("101100")
+
+
+
+#==================== COMPATIBILIDADE ================
+
+#compatível com os algoritmos de compressão:
+
+# bits = golomb.encode("ABC")
+
+# crc = crc_generator()
+
+# mensagem = crc.gerar_mensagem_crc(bits)
+
+# Ou:
+
+# bits = huffman.encode("ABC")
+
+# mensagem = crc.gerar_mensagem_crc(bits)
