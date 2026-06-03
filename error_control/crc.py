@@ -26,12 +26,12 @@ class crc_generator:
             if bloco_atual[0] == str("1"):
                 resultado = self.funcao_xor(bloco_atual, self.gerador_crc)
             else:
-                resultado = bloco_atual
+                resultado = bloco_atual[1:]
 
-            while len(resultado) > 0 and resultado[0] == str("0"):  #! VERIFICAR, PODE QUEBRAR SE FOR SÓ 0s, 00000
+            while len(resultado) > 1 and resultado[0] == str("0"):
                 resultado = resultado[1:]
 
-            while len(resultado) < len(self.gerador_crc):
+            while (len(resultado) < len(self.gerador_crc) and i_proximo_bit < len(entrada)):
                 resultado = resultado + entrada[i_proximo_bit]
                 i_proximo_bit += 1
 
@@ -40,12 +40,10 @@ class crc_generator:
         if len(bloco_atual) == len(self.gerador_crc):
             resultado = self.funcao_xor(bloco_atual, self.gerador_crc)
 
-            while len(resultado) > 0 and resultado[0] == str("0"):  #! VERIFICAR, PODE QUEBRAR SE FOR SÓ 0s, 00000
+            while len(resultado) > 1 and resultado[0] == str("0"):
                 resultado = resultado[1:]
 
             bloco_atual = resultado
-        else:
-            return bloco_atual
 
         return bloco_atual
 
@@ -53,7 +51,12 @@ class crc_generator:
         bits_reservados = len(self.gerador_crc) - 1
         crc_com_bits = entrada + ("0" * bits_reservados)
 
-        return self.divisao_crc(crc_com_bits)
+        crc = self.divisao_crc(crc_com_bits)
+
+        while len(crc) < len(self.gerador_crc) - 1:
+            crc = "0" + crc
+
+        return crc
 
     def gerar_mensagem_crc(self, entrada):
         crc = self.calcular_crc(entrada)
@@ -65,7 +68,7 @@ class crc_generator:
 
         resultado = self.divisao_crc(entrada_verf)
 
-        if resultado == "":
+        if len(resultado) == 0 or set(resultado) == {"0"}:
             print("CRC VALIDO")
         else:
             print("ERRO DETECTADO")
