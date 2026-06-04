@@ -11,29 +11,26 @@ class repetition_ri:
         return msg_encode
 
     def decode(self, entrada, repeticao):
-        #verificacao, a entrada precisa ser divisivel pela quantidade da repeticao
         if len(entrada) % repeticao != 0:
-            raise ValueError(
-                "O tamanho da entrada deve ser múltiplo da repetição."
-            )
+            return "O valor do numero da repeticao, precisa ser divisivel pela \nquantidade de caracteres da codeword"
+        else:
+            msg_decode = ""
         
-        msg_decode = ""
-        
-        for i in range(0, len(entrada), repeticao):
-            pedaco = entrada[i:i+repeticao]
-        
-            counter = Counter(pedaco)
-            mais_comum = counter.most_common(1)
-            resultado = mais_comum[0][0]
+            for i in range(0, len(entrada), repeticao):
+                pedaco = entrada[i:i+repeticao]
             
-            msg_decode+= resultado
+                counter = Counter(pedaco)
+                mais_comum = counter.most_common(1)
+                resultado = mais_comum[0][0]
+                
+                msg_decode+= resultado
+                
+            return msg_decode
             
-        return msg_decode
-    
 ri = repetition_ri()
 
 encode = ri.encode("10101", 3)
-print(encode)
+print("encode: ", encode)
 
-decode = ri.decode("111000111000111", 3)
-print(decode)
+decode = ri.decode("111000111000111", 4)
+print("decode: ", decode)
