@@ -14,10 +14,10 @@ print("Aguardando conexao...")
 cliente, addr = servidor.accept()
 print(f"Cliente Conectado: {addr}")
 
-while True:
-    mensagem = input("Digite uma mensagem: ")
-    cliente.send(mensagem.encode())
+# Enviando mensagem de boas-vindas para o cliente
+cliente.send("Iniciando codificacao e decodificacao!".encode())
 
+while True:
     mensagem = cliente.recv(1024).decode()
 
     if(mensagem == '0'):
@@ -26,4 +26,6 @@ while True:
         cliente.close()
         servidor.close()
         break
+    
     print(mensagem)
+    cliente.send(mensagem.encode())
