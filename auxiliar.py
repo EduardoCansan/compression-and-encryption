@@ -47,7 +47,8 @@ def show_main_menu():
     table = Table(title="\nEncode or Decode")
     table.add_column("OPTION 1", style="steel_blue1")
     table.add_column("OPTION 2", style="sea_green1")
-    table.add_row("Encode", "Decode")
+    table.add_column("OPTION 0", style="red")
+    table.add_row("Encode", "Decode", "Exit")
     console.print(table)
 
 # Mostra o menu de métodos (Fibonacci, Golomb, Elias-Gamma ou Huffman) 
@@ -57,11 +58,12 @@ def show_methods_menu(action: str):
         table.add_column(f"OPTION {key}", style="khaki1")
     table.add_row(*METHOD_NAMES.values())
     console.print(table)
+    
 
 # Lida com a escolha do cliente (Encode ou Decode) e chama o método escolhido para processar a entrada do cliente
 def handle_action(action: str):
     show_methods_menu(action)
-    choice = input(f"Choose a method to {action.lower()}: ").strip()
+    choice = input(f"\nChoose a method to {action.lower()}: ").strip()
 
     if choice not in METHOD_NAMES:
         console.print("\n[bold red]Invalid option![/bold red]")

@@ -21,19 +21,19 @@ print(mensagem)
 while True:
     # Comando para o cliente escolher entre Encode ou Decode e o método de codificação/decodificação
     auxiliar.show_main_menu()
-    option = input("Enter the option: ").strip()
+    option = input("\nEnter the option: ").strip()
 
     if option == "1":
         auxiliar.handle_action("Encode")
     elif option == "2":
         auxiliar.handle_action("Decode")
+    elif option == "0":
+        print("\nEncerrando conexao...")
+        cliente.send('0'.encode())
+        cliente.close()
+        break
     else:
         auxiliar.console.print("\n[bold red]Invalid option![/bold red]")
 
     mensagem = input("Digite uma mensagem: ")
     cliente.send(mensagem.encode())
-
-    if(mensagem == '0'):
-        print("Conexão Encerrada")
-        cliente.close()
-        break
