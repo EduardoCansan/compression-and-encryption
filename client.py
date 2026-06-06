@@ -2,8 +2,10 @@
 # === Configuração TCP ===
 # ========================
 
-import socket
 import auxiliar
+import socket
+import json
+import time
 
 host = '127.0.0.1'  # IP do servidor
 port = 12345  # Porta do servidor
@@ -12,7 +14,7 @@ port = 12345  # Porta do servidor
 cliente = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 cliente.connect((host, port))
 
-print("Conectado ao servidor!")
+print("\nConectado ao servidor!")
 
 # Recebe a mensagem do servidor antes do looping
 mensagem = cliente.recv(1024).decode()
@@ -24,9 +26,9 @@ while True:
     option = input("\nEnter the option: ").strip()
 
     if option == "1":
-        auxiliar.handle_action("Encode")
+        request = auxiliar.handle_action("Encode")
     elif option == "2":
-        auxiliar.handle_action("Decode")
+        request = auxiliar.handle_action("Decode")
     elif option == "0":
         print("\nEncerrando conexao...")
         cliente.send('0'.encode())
@@ -34,6 +36,18 @@ while True:
         break
     else:
         auxiliar.console.print("\n[bold red]Invalid option![/bold red]")
+        continue
 
-    mensagem = input("Digite uma mensagem: ")
-    cliente.send(mensagem.encode())
+    if request is None:
+        continue
+
+    cliente.send(json.dumps(request).encode())
+    response = json.loads(cliente.recv(4096).decode())
+
+    if response.get("ok"):
+        auxiliar.console.print(f"\n[default](Server) Result: {response.get('result')}[/default]")
+    else:
+        auxiliar.console.print(f"\n[yellow](Server) Error: {response.get('error')}[/yellow]")
+
+    print("\n\nReturning to main menu...")
+    time.sleep(7)

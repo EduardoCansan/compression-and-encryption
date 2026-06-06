@@ -1,16 +1,17 @@
-# ==========================
-# == Console configuração ==
-# ==========================
+# ============================
+# === Console configuração ===
+# ============================
 
 #biblioteca para melhorar a visão no terminal
 from rich.console import Console
 from rich.table import Table
+from typing import Optional
 
 # importa os métodos
-from logic.golomb import Golomb
 from logic.elias_gamma import EliasGamma
 from logic.fibonacci import Fibonacci
 from logic.huffman import Huffman
+from logic.golomb import Golomb
 
 console = Console()
 
@@ -60,30 +61,52 @@ def show_methods_menu(action: str):
     console.print(table)
     
 
-# Lida com a escolha do cliente (Encode ou Decode) e chama o método escolhido para processar a entrada do cliente
+# Lida com a escolha do cliente (Encode ou Decode) e monta a requisicao para o servidor
 def handle_action(action: str):
     show_methods_menu(action)
     choice = input(f"\nChoose a method to {action.lower()}: ").strip()
 
     if choice not in METHOD_NAMES:
         console.print("\n[bold red]Invalid option![/bold red]")
-        return
+        return None
 
-    method_class = METHODS[choice]
     hint = METHOD_HINTS.get((choice, action), "Enter input: ")
     text = input(hint).strip()
+    request = {
+        "action": action,
+        "method": choice,
+        "text": text,
+    }
+
+    if choice == "2":
+        while True:
+            try:
+                k = int(input("\nDigite o divisor (K) - apenas potencia de 2 : "))
+                if k >= 1 and (k & (k - 1)) == 0:
+                    request["k"] = k
+                    break
+                console.print("\n[bold red]K precisa ser potencia de 2![/bold red]")
+            except ValueError:
+                console.print("\n[bold red]Numero Invalido![/bold red]")
+
+    return request
+
+
+# Processa a requisicao recebida pelo servidor
+def process_request(action: str, choice: str, text: str, k: Optional[int] = None):
+    if action not in ("Encode", "Decode"):
+        raise ValueError("Invalid action.")
+
+    if choice not in METHOD_NAMES:
+        raise ValueError("Invalid option.")
+
+    method_class = METHODS[choice]
 
     try:
-        # Golomb precisa do divisor K
+        result = None
         if choice == "2":
-            while True:
-                try:
-                    k = int(input("Digite o divisor (K) - apenas potencia de 2 : "))
-                    if k >= 1 and (k & (k - 1)) == 0:
-                        break
-                    console.print("\n[bold red]K precisa ser potencia de 2![/bold red]")
-                except ValueError:
-                    console.print("\n[bold red]Numero Invalido![/bold red]")
+            if k is None:
+                raise ValueError("K is required for Golomb.")
 
             if action == "Encode":
                 result = method_class.encode(text, k)
@@ -96,8 +119,7 @@ def handle_action(action: str):
             else:
                 result = method_class.decode(text)
 
-        if result is not None:
-            console.print(f"\n[default]Result: {result}[/default]")
+        return result
 
     except (NotImplementedError, ValueError) as e:
-        console.print(f"\n[yellow]{e}[/yellow]")
+        raise ValueError(str(e)) from e
