@@ -1,13 +1,15 @@
+#Error_Simulator
+
 import random
 class error_simulator:
 
     #apenas um caracter 
     def inverter_bit(self, entrada, posicao):
-        if len(entrada) < posicao :
+        if len(entrada) <= posicao :
             return "Error: Posicao escolhida é maior que a quantidade de caracteres da entrada!"
         else:
             caracter = entrada[posicao]
-            print("posicao: ", posicao , "bit: ", entrada[posicao])
+            # print("posicao: ", posicao , "bit: ", entrada[posicao])
             
             if caracter == "1":
                 caracter = "0"
@@ -19,7 +21,7 @@ class error_simulator:
 
             palavra_final = palavra_antes + caracter + palavra_depois
 
-            return palavra_final
+            return palavra_final, posicao
 
     def inserir_erros_aleatorios(self, entrada, quantidade):
         if len(entrada) < quantidade :
@@ -38,35 +40,18 @@ class error_simulator:
             
             nova_msg = "".join(lista_entrada)
             
-            saida = print(f"posicoes invertidas: {posicoes}", f"\n mensagem original:  {entrada}", f"\n mensagem modificada: {nova_msg}")
+            # print(
+            #     f"posicoes invertidas: {posicoes}\n"
+            #     f"mensagem original: {entrada}\n"
+            #     f"mensagem modificada: {nova_msg}"
+            # )
             
-            return saida
-
-    def gerar_posicoes_erro(self, tamanho, quantidade):
-        """
-        (Opcional)
-
-        Recebe:
-            tamanho -> tamanho total da mensagem
-            quantidade -> quantidade de posições desejadas
-
-        Deve:
-            - gerar posições aleatórias válidas
-            - não repetir posições
-
-        Retorna:
-            lista com as posições sorteadas
-
-        Exemplo:
-            [2, 5, 8]
-        """
-        pass
-
+            return nova_msg, posicoes
 
 error = error_simulator()
 
-inverter = error.inverter_bit("10101101", 2)
-print(inverter)
+palavra_final, posicao = error.inverter_bit("10101101", 2)
+print(palavra_final, posicao)
 
-aleatorio = error.inserir_erros_aleatorios("10101101", 2)
-print(aleatorio)
+nova_msg, posicoes = error.inserir_erros_aleatorios("10101101", 2)
+print(nova_msg, posicoes)
