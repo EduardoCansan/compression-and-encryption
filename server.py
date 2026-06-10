@@ -11,21 +11,21 @@ servidor = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 servidor.bind((host, port))
 servidor.listen(1)
 
-print("\nAguardando conexao...")
+print("\nWaiting for connection...")
 
 # Aceitando a conexão cliente
 cliente, addr = servidor.accept()
-print(f"\nCliente Conectado: {addr}")
+print(f"\nClient connected: {addr}")
 
 # Enviando mensagem de boas-vindas para o cliente
-cliente.send("\nIniciando codificacao e decodificacao!".encode())
+cliente.send("\nStarting encoding and decoding!".encode())
 
 while True:
     mensagem = cliente.recv(1024).decode()
 
     if(mensagem == '0'):
         # Fechar conexões
-        print("\nCliente encerrou conexao!")
+        print("\nClient closed the connection!")
         cliente.close()
         servidor.close()
         break
@@ -42,7 +42,7 @@ while True:
         if payload.get("k") is not None:
             print(f"(Client) k: {payload.get('k')}")
         if payload.get("repeticao") is not None:
-            print(f"(Client) Repeticao: {payload.get('repeticao')}")
+            print(f"(Client) Repetition: {payload.get('repeticao')}")
         if payload.get("transmission_mode") is not None:
             print(f"(Client) Transmission Mode: {auxiliar.TRANSMISSION_MODE_NAMES.get(payload.get('transmission_mode'))}")
         print(f"(Client) Text: {payload.get('text', '')}")
@@ -60,9 +60,9 @@ while True:
             )
             details["unprotected_message"] = text
             if error_method == "1":
-                details["verification_result"] = "CRC VALIDO"
+                details["verification_result"] = "VALID CRC"
             elif error_method == "2":
-                details["verification_result"] = "Repetition Decode aplicado"
+                details["verification_result"] = "Repetition decoding applied"
 
         result = auxiliar.process_request(action, method, text, payload.get("k"))
 
@@ -98,7 +98,7 @@ while True:
         # print(f"\n(Server) Result: {result}")
         response = {"ok": True, "result": result, "details": details}
     except (json.JSONDecodeError, ValueError) as e:
-        print(f"\n(Server) Erro: {e}")
+        print(f"\n(Server) Error: {e}")
         response = {"ok": False, "error": str(e)}
 
     cliente.send(json.dumps(response).encode())

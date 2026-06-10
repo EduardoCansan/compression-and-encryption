@@ -44,14 +44,14 @@ METHOD_NAMES = {
 ERROR_METHOD_NAMES = {
     "1": "CRC",
     "2": "Repetition",
-    "3": "Hamming (em breve)",
+    "3": "Hamming (coming soon)",
 }
 
 # Modos de simulação de erro na transmissão
 TRANSMISSION_MODE_NAMES = {
-    "1": "Sem erro",
-    "2": "Erro manual",
-    "3": "Erro aleatório",
+    "1": "No error",
+    "2": "Manual error",
+    "3": "Random error",
 }
 
 # Dicas para cliente inserir as codificacoes/decodificacoes
@@ -135,15 +135,15 @@ def handle_action(action: str):
 
         if transmission_mode == "2":
             try:
-                transmission_data["error_position"] = int(input("\nDigite a posição do bit a inverter: "))
+                transmission_data["error_position"] = int(input("\nEnter the position of the bit to invert: "))
             except ValueError:
-                console.print("\n[bold red]Numero Invalido![/bold red]")
+                console.print("\n[bold red]Invalid number![/bold red]")
                 return None
         elif transmission_mode == "3":
             try:
-                transmission_data["error_quantity"] = int(input("\nQuantidade de erros: "))
+                transmission_data["error_quantity"] = int(input("\nNumber of errors: "))
             except ValueError:
-                console.print("\n[bold red]Numero Invalido![/bold red]")
+                console.print("\n[bold red]Invalid number![/bold red]")
                 return None
 
     hint = METHOD_HINTS.get((choice, action), "Enter input: ")
@@ -159,24 +159,24 @@ def handle_action(action: str):
     if choice == "2":
         while True:
             try:
-                k = int(input("\nDigite o divisor (K) - apenas potencia de 2 : "))
+                k = int(input("\nEnter the divisor (K) - powers of 2 only: "))
                 if k >= 1 and (k & (k - 1)) == 0:
                     request["k"] = k
                     break
-                console.print("\n[bold red]K precisa ser potencia de 2![/bold red]")
+                console.print("\n[bold red]K must be a power of 2![/bold red]")
             except ValueError:
-                console.print("\n[bold red]Numero Invalido![/bold red]")
+                console.print("\n[bold red]Invalid number![/bold red]")
 
     if error_choice == "2":
         while True:
             try:
-                repeticao = int(input("\nDigite o numero de repeticoes: "))
+                repeticao = int(input("\nEnter the number of repetitions: "))
                 if repeticao > 0:
                     request["repeticao"] = repeticao
                     break
-                console.print("\n[bold red]O numero de repeticoes precisa ser positivo![/bold red]")
+                console.print("\n[bold red]The number of repetitions must be positive![/bold red]")
             except ValueError:
-                console.print("\n[bold red]Numero Invalido![/bold red]")
+                console.print("\n[bold red]Invalid number![/bold red]")
 
     return request
 
@@ -249,7 +249,7 @@ def process_error_control(
         return bits[:-crc_size]
 
     if repeticao is None or repeticao <= 0:
-        raise ValueError("Repeticao is required and must be positive.")
+        raise ValueError("Repetition is required and must be positive.")
 
     repetition = method_class()
     if action == "Encode":
