@@ -47,6 +47,13 @@ ERROR_METHOD_NAMES = {
     "3": "Hamming (em breve)",
 }
 
+# Modos de simulação de erro na transmissão
+TRANSMISSION_MODE_NAMES = {
+    "1": "Sem erro",
+    "2": "Erro manual",
+    "3": "Erro aleatório",
+}
+
 # Dicas para cliente inserir as codificacoes/decodificacoes
 METHOD_HINTS = {
     ("1", "Encode"): "\nEnter text — letters, numbers and symbols are accepted as characters (ex: hello or 123): ",
@@ -86,6 +93,15 @@ def show_error_methods_menu(action: str):
     console.print(table)
 
 
+# Mostra o menu de simulação de erro na transmissão
+def show_transmission_menu():
+    table = Table(title="\nTransmission Error Simulation")
+    for key, name in TRANSMISSION_MODE_NAMES.items():
+        table.add_column(f"OPTION {key}", style="khaki1")
+    table.add_row(*TRANSMISSION_MODE_NAMES.values())
+    console.print(table)
+
+
 # Lida com a escolha do cliente (Encode ou Decode) e monta a requisicao para o servidor
 def handle_action(action: str):
     show_methods_menu(action)
@@ -106,6 +122,30 @@ def handle_action(action: str):
         console.print("\n[bold yellow]Hamming is not implemented yet![/bold yellow]")
         return None
 
+    transmission_data = {}
+    if action == "Encode":
+        show_transmission_menu()
+        transmission_mode = input("\nChoose a transmission mode: ").strip()
+
+        if transmission_mode not in TRANSMISSION_MODE_NAMES:
+            console.print("\n[bold red]Invalid option![/bold red]")
+            return None
+
+        transmission_data["transmission_mode"] = transmission_mode
+
+        if transmission_mode == "2":
+            try:
+                transmission_data["error_position"] = int(input("\nDigite a posição do bit a inverter: "))
+            except ValueError:
+                console.print("\n[bold red]Numero Invalido![/bold red]")
+                return None
+        elif transmission_mode == "3":
+            try:
+                transmission_data["error_quantity"] = int(input("\nQuantidade de erros: "))
+            except ValueError:
+                console.print("\n[bold red]Numero Invalido![/bold red]")
+                return None
+
     hint = METHOD_HINTS.get((choice, action), "Enter input: ")
     text = input(hint).strip()
     request = {
@@ -114,6 +154,7 @@ def handle_action(action: str):
         "error_method": error_choice,
         "text": text,
     }
+    request.update(transmission_data)
 
     if choice == "2":
         while True:

@@ -1,6 +1,7 @@
 import auxiliar
 import socket
 import json
+from error_control.error import error_simulator
 
 # Configuração do TCP do servidor 
 host = '127.0.0.1'  # Endereço IP do servidor (localhost)
@@ -42,6 +43,8 @@ while True:
             print(f"(Client) k: {payload.get('k')}")
         if payload.get("repeticao") is not None:
             print(f"(Client) Repeticao: {payload.get('repeticao')}")
+        if payload.get("transmission_mode") is not None:
+            print(f"(Client) Transmission Mode: {auxiliar.TRANSMISSION_MODE_NAMES.get(payload.get('transmission_mode'))}")
         print(f"(Client) Text: {payload.get('text', '')}")
 
         action = payload.get("action")
@@ -74,6 +77,23 @@ while True:
             )
             if error_method == "1":
                 details["crc"] = result[len(codeword):]
+
+            details["protected_message"] = result
+            transmission_mode = payload.get("transmission_mode", "1")
+            simulator = error_simulator()
+
+            if transmission_mode == "2":
+                simulation = simulator.inverter_bit(result, payload.get("error_position"))
+                if isinstance(simulation, str):
+                    raise ValueError(simulation)
+                result, position = simulation
+                details["changed_positions"] = [position]
+            elif transmission_mode == "3":
+                simulation = simulator.inserir_erros_aleatorios(result, payload.get("error_quantity"))
+                if isinstance(simulation, str):
+                    raise ValueError(simulation)
+                result, positions = simulation
+                details["changed_positions"] = positions
         # Server não mostra a resposta ainda
         # print(f"\n(Server) Result: {result}")
         response = {"ok": True, "result": result, "details": details}
