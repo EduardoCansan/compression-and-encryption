@@ -32,19 +32,38 @@ while True:
     try:
         payload = json.loads(mensagem)
         method = payload.get("method")
+        error_method = payload.get("error_method")
 
         print(f"\n(Client) Action: {payload.get('action')}")
         print(f"(Client) Method: {auxiliar.METHOD_NAMES.get(method, method)}")
+        if error_method is not None:
+            print(f"(Client) Error Method: {auxiliar.ERROR_METHOD_NAMES.get(error_method, error_method)}")
         if payload.get("k") is not None:
             print(f"(Client) k: {payload.get('k')}")
+        if payload.get("repeticao") is not None:
+            print(f"(Client) Repeticao: {payload.get('repeticao')}")
         print(f"(Client) Text: {payload.get('text', '')}")
 
-        result = auxiliar.process_request(
-            payload.get("action"),
-            method,
-            payload.get("text", ""),
-            payload.get("k"),
-        )
+        action = payload.get("action")
+        text = payload.get("text", "")
+
+        if action == "Decode":
+            text = auxiliar.process_error_control(
+                action,
+                error_method,
+                text,
+                payload.get("repeticao"),
+            )
+
+        result = auxiliar.process_request(action, method, text, payload.get("k"))
+
+        if action == "Encode":
+            result = auxiliar.process_error_control(
+                action,
+                error_method,
+                result,
+                payload.get("repeticao"),
+            )
         # Server não mostra a resposta ainda
         # print(f"\n(Server) Result: {result}")
         response = {"ok": True, "result": result}
