@@ -46,6 +46,7 @@ while True:
 
         action = payload.get("action")
         text = payload.get("text", "")
+        details = {}
 
         if action == "Decode":
             text = auxiliar.process_error_control(
@@ -54,19 +55,28 @@ while True:
                 text,
                 payload.get("repeticao"),
             )
+            details["unprotected_message"] = text
+            if error_method == "1":
+                details["verification_result"] = "CRC VALIDO"
+            elif error_method == "2":
+                details["verification_result"] = "Repetition Decode aplicado"
 
         result = auxiliar.process_request(action, method, text, payload.get("k"))
 
         if action == "Encode":
+            details["codeword"] = result
+            codeword = result
             result = auxiliar.process_error_control(
                 action,
                 error_method,
                 result,
                 payload.get("repeticao"),
             )
+            if error_method == "1":
+                details["crc"] = result[len(codeword):]
         # Server não mostra a resposta ainda
         # print(f"\n(Server) Result: {result}")
-        response = {"ok": True, "result": result}
+        response = {"ok": True, "result": result, "details": details}
     except (json.JSONDecodeError, ValueError) as e:
         print(f"\n(Server) Erro: {e}")
         response = {"ok": False, "error": str(e)}

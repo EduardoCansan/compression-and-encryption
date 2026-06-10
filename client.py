@@ -44,10 +44,28 @@ while True:
     cliente.send(json.dumps(request).encode())
     response = json.loads(cliente.recv(4096).decode())
 
+    print(f"\n==================== {request.get('action').upper()} ====================")
+    print(f"Método: {auxiliar.METHOD_NAMES.get(request.get('method'))}")
+    print(f"Método de erro: {auxiliar.ERROR_METHOD_NAMES.get(request.get('error_method'))}")
+
     if response.get("ok"):
-        auxiliar.console.print(f"\n[default](Server) Result: {response.get('result')}[/default]")
+        details = response.get("details", {})
+
+        if request.get("action") == "Encode":
+            print(f"Texto original: {request.get('text')}")
+            print(f"Codeword: {details.get('codeword')}")
+            if request.get("error_method") == "1":
+                print(f"CRC: {details.get('crc')}")
+            elif request.get("error_method") == "2":
+                print(f"Repetition ({request.get('repeticao')}): {response.get('result')}")
+            print(f"Mensagem transmitida: {response.get('result')}")
+        else:
+            print(f"Mensagem recebida: {request.get('text')}")
+            print(f"Resultado da verificação: {details.get('verification_result')}")
+            print(f"Mensagem sem controle de erro: {details.get('unprotected_message')}")
+            print(f"Mensagem decodificada: {response.get('result')}")
     else:
-        auxiliar.console.print(f"\n[yellow](Server) Error: {response.get('error')}[/yellow]")
+        print(f"Erro: {response.get('error')}")
 
     print("\n\nReturning to main menu...")
     time.sleep(7)
