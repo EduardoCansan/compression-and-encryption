@@ -201,7 +201,10 @@ def process_error_control(
         crc_size = len(crc.gerador_crc) - 1
         if len(bits) < crc_size:
             raise ValueError("Invalid CRC message.")
-        crc.verificar_crc(bits)
+        
+        resultado_crc = crc.verificar_crc(bits)
+        if set(resultado_crc) != {"0"}:
+            raise ValueError("CRC error detected.")
         return bits[:-crc_size]
 
     if repeticao is None or repeticao <= 0:
