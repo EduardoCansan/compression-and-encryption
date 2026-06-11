@@ -125,6 +125,7 @@ class hamming:
             if posicao_erro:
                 bloco = cls.corrigir_erro(bloco, posicao_erro)
 
+            # Devolve o hamming completo corrigido, mas só adiciona os bits de dados ao resultado final
             dados.append(cls.remover_bits_paridade(bloco))
 
         return "".join(dados) + resto
