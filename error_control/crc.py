@@ -74,6 +74,9 @@ class crc_generator:
         while len(crc) < len(self.gerador_crc) - 1:
             crc = "0" + crc
 
+        # Mantém somente os últimos bits para garantir o tamanho esperado do CRC
+        crc = crc[-(len(self.gerador_crc) - 1):]
+
         # Retorna apenas o valor do CRC calculado
         return crc
 
@@ -86,11 +89,8 @@ class crc_generator:
         return resultado_mensagem
 
     def verificar_crc(self, entrada):
-        # Gera a mensagem completa com CRC para testar se está consistente
-        entrada_verf = self.gerar_mensagem_crc(entrada)
-
-        # Roda a divisão CRC sobre a mensagem montada
-        resultado = self.divisao_crc(entrada_verf)
+        # Roda a divisão CRC sobre a mensagem recebida
+        resultado = self.divisao_crc(entrada)
 
         # Se o resto for vazio ou só tiver zeros, a mensagem é considerada válida
         if len(resultado) == 0 or set(resultado) == {"0"}:
