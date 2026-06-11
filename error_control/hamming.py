@@ -58,6 +58,7 @@ class hamming:
         if len(bloco) != cls.TAMANHO_DADOS:
             raise ValueError("Hamming block must have exactly 4 bits.")
 
+        # Lógica para calcular os bits de paridade P1, P2 e P4 com base nos bits de dados D1, D2, D3 e D4
         d1, d2, d3, d4 = bloco
 
         p1 = cls.xor_bits([d1, d2, d4])
@@ -112,6 +113,7 @@ class hamming:
 
         dados = []
 
+        # Para cada bloco de 7 bits, verifica se existe erro, corrige se necessário e extrai os 4 bits de dados.
         for bloco in cls.separar_blocos(entrada, cls.TAMANHO_CODEWORD):
             posicao_erro = cls.verificar_erro(bloco)
 

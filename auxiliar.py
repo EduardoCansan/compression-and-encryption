@@ -144,8 +144,12 @@ def handle_action(action: str):
 
     # guarda campos relacionados à simulação de transmissão.
     transmission_data = {}
+    # Hamming já corrige erro simples no próprio decode, então não passa pelo menu de simulação.
+    if action == "Encode" and error_choice == "3":
+        transmission_data["transmission_mode"] = "1"
+
     # A simulação de transmissão é configurada apenas no fluxo Encode.
-    if action == "Encode":
+    elif action == "Encode":
         show_transmission_menu()
         transmission_mode = input("\nChoose a transmission mode: ").strip()
 

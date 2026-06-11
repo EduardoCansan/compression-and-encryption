@@ -108,6 +108,8 @@ while True:
 # Guarda a mensagem antes de qualquer erro de transmissão ser simulado.
             details["protected_message"] = result
             transmission_mode = payload.get("transmission_mode", "1")
+            if error_method == "3":
+                transmission_mode = "1"
 # Cria o objeto responsável por simular alterações nos bits transmitidos.
             simulator = error_simulator()
 
