@@ -48,10 +48,11 @@ class error_simulator:
             
             return nova_msg, posicoes
 
-error = error_simulator()
+# ============= TESTES =============
+# error = error_simulator()
 
-palavra_final, posicao = error.inverter_bit("10101101", 2)
-print(palavra_final, posicao)
+# palavra_final, posicao = error.inverter_bit("10101101", 2)
+# print(palavra_final, posicao)
 
-nova_msg, posicoes = error.inserir_erros_aleatorios("10101101", 2)
-print(nova_msg, posicoes)
+# nova_msg, posicoes = error.inserir_erros_aleatorios("10101101", 2)
+# print(nova_msg, posicoes)

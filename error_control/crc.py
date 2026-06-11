@@ -104,16 +104,17 @@ class crc_generator:
         return resultado
 
 
+# ============= TESTES =============
 # criado instacia da classe 101100
-meu_crc = crc_generator()
+# meu_crc = crc_generator()
 
-crc = meu_crc.calcular_crc("101100")
-print("CRC FINAL:", crc)
+# crc = meu_crc.calcular_crc("101100")
+# print("CRC FINAL:", crc)
 
-msg = meu_crc.gerar_mensagem_crc("101100")
-print("mensagem crc:", msg)
+# msg = meu_crc.gerar_mensagem_crc("101100")
+# print("mensagem crc:", msg)
 
-verificacao = meu_crc.verificar_crc("101100")
+# verificacao = meu_crc.verificar_crc("101100")
 
 
 

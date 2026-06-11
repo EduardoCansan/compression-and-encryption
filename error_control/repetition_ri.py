@@ -26,11 +26,12 @@ class repetition_ri:
                 msg_decode+= resultado
                 
             return msg_decode
-            
-ri = repetition_ri()
 
-encode = ri.encode("10101", 3)
-print("encode: ", encode)
+# ============= TESTES =============            
+# ri = repetition_ri()
 
-decode = ri.decode("111000111000111", 4)
-print("decode: ", decode)
+# encode = ri.encode("10101", 3)
+# print("encode: ", encode)
+
+# decode = ri.decode("111000111000111", 4)
+# print("decode: ", decode)
