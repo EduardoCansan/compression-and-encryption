@@ -2,20 +2,23 @@
 # === Console configuração ===
 # ============================
 
-#biblioteca para melhorar a visão no terminal
+# Biblioteca para melhorar a visão no terminal
 from rich.console import Console
 from rich.table import Table
 from typing import Optional
 
-# importa os métodos
+# Importa os métodos 
+# Métodos de codificação/decodificação
 from logic.elias_gamma import EliasGamma
 from logic.fibonacci import Fibonacci
 from logic.huffman import Huffman
 from logic.golomb import Golomb
+# Métodos de controle de erro
 from error_control.crc import crc_generator
 from error_control.repetition_ri import repetition_ri
+from error_control.hamming import hamming
 
-# console do Rich 
+# Console do Rich 
 console = Console()
 
 # Metodos de codificação disponíveis
@@ -30,7 +33,7 @@ METHODS: dict[str, type] = {
 ERROR_METHODS: dict[str, Optional[type]] = {
     "1": crc_generator,
     "2": repetition_ri,
-    "3": None,  # Hamming ainda não implementado
+    "3": hamming,
 }
 
 # Nome dos métodos de codificação
@@ -47,7 +50,7 @@ METHOD_NAMES = {
 ERROR_METHOD_NAMES = {
     "1": "CRC",
     "2": "Repetition",
-    "3": "Hamming (coming soon)",
+    "3": "Hamming",
 }
 
 # Modos de simulação de erro na transmissão
@@ -137,11 +140,6 @@ def handle_action(action: str):
 
     if error_choice not in ERROR_METHOD_NAMES:
         console.print("\n[bold red]Invalid option![/bold red]")
-        return None
-
-    # TEMPORARIO Impede o uso de um método que aparece no menu, mas ainda não foi implementado.
-    if ERROR_METHODS[error_choice] is None:
-        console.print("\n[bold yellow]Hamming is not implemented yet![/bold yellow]")
         return None
 
     # guarda campos relacionados à simulação de transmissão.
@@ -275,8 +273,6 @@ def process_error_control(
 
 # Encontra a classe de controle de erro usando a tabela ERROR_METHODS.
     method_class = ERROR_METHODS[choice]
-    if method_class is None:
-        raise ValueError("Hamming is not implemented yet.")
 
 # O CRC trabalha apenas com bits e permite detectar alterações na mensagem.
     if choice == "1":
@@ -297,6 +293,16 @@ def process_error_control(
         if set(resultado_crc) != {"0"}:
             raise ValueError("CRC error detected.")
         return bits[:-crc_size]
+
+# O Hamming adiciona bits de paridade nas posições 1, 2, 4, 8...
+# No Decode, corrige um erro simples e remove os bits de paridade.
+    if choice == "3":
+        if any(bit not in "01" for bit in bits):
+            raise ValueError("Hamming requires a binary string.")
+
+        if action == "Encode":
+            return method_class.encode(bits)
+        return method_class.decode(bits)
 
 # Repetition exige uma quantidade positiva de repetições.
     if repeticao is None or repeticao <= 0:
