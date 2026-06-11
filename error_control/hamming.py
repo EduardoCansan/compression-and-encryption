@@ -41,16 +41,20 @@ class hamming:
     def encode(cls, entrada):
         cls.validar_entrada_binaria(entrada)
 
-        if len(entrada) % cls.TAMANHO_DADOS != 0:
-            raise ValueError("Hamming(7,4) requires input length multiple of 4.")
-
+        # Aqui é a lógica aplicada ao problema que estavamos tendo
+        # Não pegava a string completa, apenas os blocos completos de 4 bits
+        # O que fizemos for adicionar o resto da string (se tiver) ao final do resultado, sem passar pelo processo de codificação
+        # Assim nao fica sobrando e dando erro, e os blocos de 4 bits são processados normalmente, gerando as codewords de 7 bits
         codewords = []
+        tamanho_completo = len(entrada) - (len(entrada) % cls.TAMANHO_DADOS)
+        blocos_completos = entrada[:tamanho_completo]
+        resto = entrada[tamanho_completo:]
 
         # Cria as codewords para cada bloco de dados
-        for bloco in cls.separar_blocos(entrada, cls.TAMANHO_DADOS):
+        for bloco in cls.separar_blocos(blocos_completos, cls.TAMANHO_DADOS):
             codewords.append(cls.encode_bloco(bloco))
 
-        return "".join(codewords)
+        return "".join(codewords) + resto
 
 
     @classmethod
@@ -108,13 +112,13 @@ class hamming:
 
         cls.validar_entrada_binaria(entrada)
 
-        if len(entrada) % cls.TAMANHO_CODEWORD != 0:
-            raise ValueError("Hamming(7,4) requires input length multiple of 7.")
-
         dados = []
+        tamanho_completo = len(entrada) - (len(entrada) % cls.TAMANHO_CODEWORD)
+        blocos_completos = entrada[:tamanho_completo]
+        resto = entrada[tamanho_completo:]
 
         # Para cada bloco de 7 bits, verifica se existe erro, corrige se necessário e extrai os 4 bits de dados.
-        for bloco in cls.separar_blocos(entrada, cls.TAMANHO_CODEWORD):
+        for bloco in cls.separar_blocos(blocos_completos, cls.TAMANHO_CODEWORD):
             posicao_erro = cls.verificar_erro(bloco)
 
             if posicao_erro:
@@ -122,4 +126,4 @@ class hamming:
 
             dados.append(cls.remover_bits_paridade(bloco))
 
-        return "".join(dados)
+        return "".join(dados) + resto
