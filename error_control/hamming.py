@@ -1,6 +1,21 @@
 class hamming:
 
-    def encode(self, entrada):
+    @staticmethod
+    def validar_entrada_binaria(entrada):
+        if not entrada:
+            raise ValueError("A entrada nao pode ser vazia.")
+
+        if any(bit not in "01" for bit in entrada):
+            raise ValueError("A entrada precisa conter apenas 0 e 1.")
+
+
+    @staticmethod
+    def eh_posicao_paridade(posicao):
+        return posicao > 0 and (posicao & (posicao - 1)) == 0
+
+
+    @classmethod
+    def encode(cls, entrada):
         """
         Recebe uma string binária.
 
@@ -16,10 +31,16 @@ class hamming:
         5. Retornar a mensagem codificada.
         """
 
-        pass
+        cls.validar_entrada_binaria(entrada)
+
+        qtd_paridade = cls.calcular_bits_paridade(len(entrada))
+        palavra = cls.inserir_posicoes_paridade(entrada, qtd_paridade)
+
+        return cls.gerar_paridades(palavra)
 
 
-    def calcular_bits_paridade(self, tamanho_dados):
+    @staticmethod
+    def calcular_bits_paridade(tamanho_dados):
         """
         Recebe a quantidade de bits de dados.
 
@@ -36,10 +57,16 @@ class hamming:
         3. Retornar a quantidade de bits de paridade.
         """
 
-        pass
+        qtd_paridade = 0
+
+        while (2 ** qtd_paridade) < tamanho_dados + qtd_paridade + 1:
+            qtd_paridade += 1
+
+        return qtd_paridade
 
 
-    def inserir_posicoes_paridade(self, entrada, qtd_paridade):
+    @classmethod
+    def inserir_posicoes_paridade(cls, entrada, qtd_paridade):
         """
         Recebe:
         - entrada
@@ -64,10 +91,22 @@ class hamming:
         Retornar a palavra montada.
         """
 
-        pass
+        tamanho_total = len(entrada) + qtd_paridade
+        palavra = []
+        indice_dados = 0
+
+        for posicao in range(1, tamanho_total + 1):
+            if cls.eh_posicao_paridade(posicao):
+                palavra.append("0")
+            else:
+                palavra.append(entrada[indice_dados])
+                indice_dados += 1
+
+        return "".join(palavra)
 
 
-    def gerar_paridades(self, palavra):
+    @classmethod
+    def gerar_paridades(cls, palavra):
         """
         Recebe a palavra contendo os bits de paridade.
 
@@ -90,10 +129,25 @@ class hamming:
         Retornar a palavra completa.
         """
 
-        pass
+        bits = list(palavra)
+        tamanho = len(bits)
+        posicao_paridade = 1
+
+        while posicao_paridade <= tamanho:
+            paridade = 0
+
+            for posicao in range(1, tamanho + 1):
+                if posicao & posicao_paridade:
+                    paridade ^= int(bits[posicao - 1])
+
+            bits[posicao_paridade - 1] = str(paridade)
+            posicao_paridade *= 2
+
+        return "".join(bits)
 
 
-    def verificar_erro(self, entrada):
+    @staticmethod
+    def verificar_erro(entrada):
         """
         Recebe uma palavra codificada.
 
@@ -110,10 +164,29 @@ class hamming:
            posição do erro.
         """
 
-        pass
+        hamming.validar_entrada_binaria(entrada)
+
+        posicao_erro = 0
+        tamanho = len(entrada)
+        posicao_paridade = 1
+
+        while posicao_paridade <= tamanho:
+            paridade = 0
+
+            for posicao in range(1, tamanho + 1):
+                if posicao & posicao_paridade:
+                    paridade ^= int(entrada[posicao - 1])
+
+            if paridade != 0:
+                posicao_erro += posicao_paridade
+
+            posicao_paridade *= 2
+
+        return posicao_erro
 
 
-    def corrigir_erro(self, entrada, posicao):
+    @staticmethod
+    def corrigir_erro(entrada, posicao):
         """
         Recebe:
         - palavra recebida
@@ -124,10 +197,18 @@ class hamming:
         2. Retornar a palavra corrigida.
         """
 
-        pass
+        if posicao < 1 or posicao > len(entrada):
+            raise ValueError("Posicao de erro invalida.")
+
+        bits = list(entrada)
+        indice = posicao - 1
+        bits[indice] = "0" if bits[indice] == "1" else "1"
+
+        return "".join(bits)
 
 
-    def remover_bits_paridade(self, entrada):
+    @classmethod
+    def remover_bits_paridade(cls, entrada):
         """
         Recebe uma palavra Hamming válida.
 
@@ -148,10 +229,17 @@ class hamming:
         Retornar apenas os dados.
         """
 
-        pass
+        dados = []
+
+        for posicao, bit in enumerate(entrada, start=1):
+            if not cls.eh_posicao_paridade(posicao):
+                dados.append(bit)
+
+        return "".join(dados)
 
 
-    def decode(self, entrada):
+    @classmethod
+    def decode(cls, entrada):
         """
         Recebe uma palavra Hamming.
 
@@ -172,4 +260,12 @@ class hamming:
         Retornar os bits recuperados.
         """
 
-        pass
+        cls.validar_entrada_binaria(entrada)
+
+        posicao_erro = cls.verificar_erro(entrada)
+        palavra_corrigida = entrada
+
+        if posicao_erro:
+            palavra_corrigida = cls.corrigir_erro(entrada, posicao_erro)
+
+        return cls.remover_bits_paridade(palavra_corrigida)
