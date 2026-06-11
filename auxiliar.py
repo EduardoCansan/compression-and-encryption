@@ -1,7 +1,3 @@
-# ============================
-# === Console configuração ===
-# ============================
-
 # Biblioteca para melhorar a visão no terminal
 from rich.console import Console
 from rich.table import Table
@@ -256,6 +252,20 @@ def process_request(action: str, choice: str, text: str, k: Optional[int] = None
     except (NotImplementedError, ValueError) as e:
         raise ValueError(str(e)) from e
 
+def separar_huffman(bits):
+    if "|" not in bits:
+        return None, bits
+
+    tabela, bits = bits.split("|", 1)
+
+    return tabela.strip(), bits.strip()
+
+
+def remontar_huffman(tabela, bits):
+    if tabela is None:
+        return bits
+
+    return f"{tabela} | {bits}"
 
 # Aplica ou remove o controle de erro antes/depois da compressao
 # Objetivo: adicionar proteção no Encode ou verificar/remover proteção no Decode.
@@ -274,6 +284,8 @@ def process_error_control(
 
     if choice not in ERROR_METHOD_NAMES:
         raise ValueError("Invalid error control option.")
+    
+    huffman_table, bits = separar_huffman(bits)
 
 # Encontra a classe de controle de erro usando a tabela ERROR_METHODS.
     method_class = ERROR_METHODS[choice]
@@ -286,7 +298,10 @@ def process_error_control(
         crc = method_class()
 # No Encode, calcula o CRC e o acrescenta à mensagem.
         if action == "Encode":
-            return crc.gerar_mensagem_crc(bits)
+            return remontar_huffman(
+            huffman_table,
+            crc.gerar_mensagem_crc(bits)
+        )
 
 # No Decode, verifica o CRC antes de remover os bits usados na proteção.
         crc_size = len(crc.gerador_crc) - 1
@@ -296,7 +311,7 @@ def process_error_control(
         resultado_crc = crc.verificar_crc(bits)
         if set(resultado_crc) != {"0"}:
             raise ValueError("CRC error detected.")
-        return bits[:-crc_size]
+        return remontar_huffman(huffman_table,bits[:-crc_size])
 
 # O Hamming adiciona bits de paridade nas posições 1, 2, 4, 8...
 # No Decode, corrige um erro simples e remove os bits de paridade.
@@ -305,8 +320,11 @@ def process_error_control(
             raise ValueError("Hamming requires a binary string.")
 
         if action == "Encode":
-            return method_class.encode(bits)
-        return method_class.decode(bits)
+            return remontar_huffman(
+                huffman_table,
+                method_class.encode(bits)
+            )
+        return remontar_huffman(huffman_table,method_class.decode(bits))
 
 # Repetition exige uma quantidade positiva de repetições.
     if repeticao is None or repeticao <= 0:
@@ -315,5 +333,9 @@ def process_error_control(
     repetition = method_class()
 # No Encode repete os dados; no Decode recupera os dados a partir das repetições.
     if action == "Encode":
-        return repetition.encode(bits, repeticao)
-    return repetition.decode(bits, repeticao)
+        return remontar_huffman(
+            huffman_table,
+            repetition.encode(bits, repeticao)
+        )
+
+    return remontar_huffman(huffman_table,repetition.decode(bits, repeticao))
