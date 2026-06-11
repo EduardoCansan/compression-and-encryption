@@ -1,203 +1,91 @@
 class hamming:
-
+    #Usando o hamming assim como ensinado em sala de aula:
+    # Hamming(7,4) - 4 bits de dados + 3 bits de paridade
+    # Posicoes: 1 2 3 4 5 6 7
+    # P P D P D D D
+    TAMANHO_DADOS = 4
+    TAMANHO_CODEWORD = 7
+    
+    # Valida a entrada
     @staticmethod
     def validar_entrada_binaria(entrada):
+        # Se é vazia
         if not entrada:
             raise ValueError("A entrada nao pode ser vazia.")
 
+        # Se tem caracteres diferentes de 0 e 1
         if any(bit not in "01" for bit in entrada):
             raise ValueError("A entrada precisa conter apenas 0 e 1.")
 
-
+    # Metodo para calcular o XOR de uma lista de bits (0 e 1)
     @staticmethod
-    def eh_posicao_paridade(posicao):
-        return posicao > 0 and (posicao & (posicao - 1)) == 0
+    def xor_bits(bits):
+        resultado = 0
+
+        for bit in bits:
+            resultado ^= int(bit)
+
+        return str(resultado)
+
+    # Separacao dos blocos, faz a separacao da string de entrada em blocos de tamanho definido
+    # Assim conseguimos processar cada bloco de dados e gerar a codeword correspondente
+    @staticmethod
+    def separar_blocos(entrada, tamanho_bloco):
+        return [
+            entrada[i:i + tamanho_bloco]
+            for i in range(0, len(entrada), tamanho_bloco)
+        ]
 
 
     @classmethod
     def encode(cls, entrada):
-        """
-        Recebe uma string binária.
-
-        Exemplo:
-        "1011"
-
-        Deve:
-        1. Separar os bits de dados.
-        2. Calcular quantos bits de paridade são necessários.
-        3. Inserir os bits de paridade nas posições:
-           1, 2, 4, 8, 16...
-        4. Calcular o valor de cada bit de paridade.
-        5. Retornar a mensagem codificada.
-        """
-
         cls.validar_entrada_binaria(entrada)
 
-        qtd_paridade = cls.calcular_bits_paridade(len(entrada))
-        palavra = cls.inserir_posicoes_paridade(entrada, qtd_paridade)
+        if len(entrada) % cls.TAMANHO_DADOS != 0:
+            raise ValueError("Hamming(7,4) requires input length multiple of 4.")
 
-        return cls.gerar_paridades(palavra)
+        codewords = []
 
+        # Cria as codewords para cada bloco de dados
+        for bloco in cls.separar_blocos(entrada, cls.TAMANHO_DADOS):
+            codewords.append(cls.encode_bloco(bloco))
 
-    @staticmethod
-    def calcular_bits_paridade(tamanho_dados):
-        """
-        Recebe a quantidade de bits de dados.
-
-        Deve:
-        1. Descobrir quantos bits de paridade serão necessários.
-        2. Utilizar a condição:
-
-           2^r >= m + r + 1
-
-           onde:
-           m = bits de dados
-           r = bits de paridade
-
-        3. Retornar a quantidade de bits de paridade.
-        """
-
-        qtd_paridade = 0
-
-        while (2 ** qtd_paridade) < tamanho_dados + qtd_paridade + 1:
-            qtd_paridade += 1
-
-        return qtd_paridade
+        return "".join(codewords)
 
 
     @classmethod
-    def inserir_posicoes_paridade(cls, entrada, qtd_paridade):
-        """
-        Recebe:
-        - entrada
-        - quantidade de bits de paridade
+    def encode_bloco(cls, bloco):
+        if len(bloco) != cls.TAMANHO_DADOS:
+            raise ValueError("Hamming block must have exactly 4 bits.")
 
-        Deve:
-        1. Criar uma nova palavra.
-        2. Colocar bits de paridade (temporariamente 0)
-           nas posições:
-           1, 2, 4, 8, 16...
+        d1, d2, d3, d4 = bloco
 
-        3. Inserir os bits de dados nas demais posições.
+        p1 = cls.xor_bits([d1, d2, d4])
+        p2 = cls.xor_bits([d1, d3, d4])
+        p4 = cls.xor_bits([d2, d3, d4])
 
-        Exemplo:
-
-        Entrada:
-        1011
-
-        Resultado temporário:
-        P P 1 P 0 1 1
-
-        Retornar a palavra montada.
-        """
-
-        tamanho_total = len(entrada) + qtd_paridade
-        palavra = []
-        indice_dados = 0
-
-        for posicao in range(1, tamanho_total + 1):
-            if cls.eh_posicao_paridade(posicao):
-                palavra.append("0")
-            else:
-                palavra.append(entrada[indice_dados])
-                indice_dados += 1
-
-        return "".join(palavra)
+        return p1 + p2 + d1 + p4 + d2 + d3 + d4
 
 
     @classmethod
-    def gerar_paridades(cls, palavra):
-        """
-        Recebe a palavra contendo os bits de paridade.
+    def verificar_erro(cls, entrada):
+        # Recalcula as paridades de uma codeword Hamming(7,4).
+        # Retorna 0 quando nao existe erro ou a posicao 1..7 do bit errado.
+        cls.validar_entrada_binaria(entrada)
 
-        Deve:
-        1. Calcular cada bit de paridade.
-        2. Utilizar XOR para descobrir a paridade.
-        3. Atualizar os bits P da palavra.
+        if len(entrada) != cls.TAMANHO_CODEWORD:
+            raise ValueError("Hamming codeword must have exactly 7 bits.")
 
-        Exemplo:
+        s1 = int(cls.xor_bits([entrada[0], entrada[2], entrada[4], entrada[6]]))
+        s2 = int(cls.xor_bits([entrada[1], entrada[2], entrada[5], entrada[6]]))
+        s4 = int(cls.xor_bits([entrada[3], entrada[4], entrada[5], entrada[6]]))
 
-        Posição 1 verifica:
-        1,3,5,7...
-
-        Posição 2 verifica:
-        2,3,6,7...
-
-        Posição 4 verifica:
-        4,5,6,7...
-
-        Retornar a palavra completa.
-        """
-
-        bits = list(palavra)
-        tamanho = len(bits)
-        posicao_paridade = 1
-
-        while posicao_paridade <= tamanho:
-            paridade = 0
-
-            for posicao in range(1, tamanho + 1):
-                if posicao & posicao_paridade:
-                    paridade ^= int(bits[posicao - 1])
-
-            bits[posicao_paridade - 1] = str(paridade)
-            posicao_paridade *= 2
-
-        return "".join(bits)
+        return s1 + (s2 * 2) + (s4 * 4)
 
 
-    @staticmethod
-    def verificar_erro(entrada):
-        """
-        Recebe uma palavra codificada.
-
-        Deve:
-        1. Recalcular todas as paridades.
-        2. Verificar quais paridades falharam.
-        3. Montar a síndrome de erro.
-        4. Retornar:
-
-           0  -> sem erro
-
-           ou
-
-           posição do erro.
-        """
-
-        hamming.validar_entrada_binaria(entrada)
-
-        posicao_erro = 0
-        tamanho = len(entrada)
-        posicao_paridade = 1
-
-        while posicao_paridade <= tamanho:
-            paridade = 0
-
-            for posicao in range(1, tamanho + 1):
-                if posicao & posicao_paridade:
-                    paridade ^= int(entrada[posicao - 1])
-
-            if paridade != 0:
-                posicao_erro += posicao_paridade
-
-            posicao_paridade *= 2
-
-        return posicao_erro
-
-
-    @staticmethod
-    def corrigir_erro(entrada, posicao):
-        """
-        Recebe:
-        - palavra recebida
-        - posição do erro
-
-        Deve:
-        1. Inverter o bit da posição informada.
-        2. Retornar a palavra corrigida.
-        """
-
-        if posicao < 1 or posicao > len(entrada):
+    @classmethod
+    def corrigir_erro(cls, entrada, posicao):
+        if posicao < 1 or posicao > cls.TAMANHO_CODEWORD:
             raise ValueError("Posicao de erro invalida.")
 
         bits = list(entrada)
@@ -206,66 +94,30 @@ class hamming:
 
         return "".join(bits)
 
-
-    @classmethod
-    def remover_bits_paridade(cls, entrada):
-        """
-        Recebe uma palavra Hamming válida.
-
-        Deve:
-        1. Remover posições:
-           1,2,4,8,16...
-
-        2. Manter apenas os bits de dados.
-
-        Exemplo:
-
-        0110011
-
-        ↓
-
-        1011
-
-        Retornar apenas os dados.
-        """
-
-        dados = []
-
-        for posicao, bit in enumerate(entrada, start=1):
-            if not cls.eh_posicao_paridade(posicao):
-                dados.append(bit)
-
-        return "".join(dados)
+    # Remove as pariedades para retornar apenas os bits de dados
+    @staticmethod
+    def remover_bits_paridade(entrada):
+        return entrada[2] + entrada[4] + entrada[5] + entrada[6]
 
 
     @classmethod
     def decode(cls, entrada):
-        """
-        Recebe uma palavra Hamming.
-
-        Fluxo:
-
-        1. Verificar erro.
-        2. Se houver erro:
-              corrigir.
-        3. Remover bits de paridade.
-        4. Retornar os dados originais.
-
-        Também pode exibir:
-
-        'Erro encontrado na posição X'
-
-        'Mensagem corrigida'
-
-        Retornar os bits recuperados.
-        """
+        # Recebe uma sequencia Hamming(7,4), corrige um erro por bloco
+        # retorna apenas os bits de dados reconstruidos.
 
         cls.validar_entrada_binaria(entrada)
 
-        posicao_erro = cls.verificar_erro(entrada)
-        palavra_corrigida = entrada
+        if len(entrada) % cls.TAMANHO_CODEWORD != 0:
+            raise ValueError("Hamming(7,4) requires input length multiple of 7.")
 
-        if posicao_erro:
-            palavra_corrigida = cls.corrigir_erro(entrada, posicao_erro)
+        dados = []
 
-        return cls.remover_bits_paridade(palavra_corrigida)
+        for bloco in cls.separar_blocos(entrada, cls.TAMANHO_CODEWORD):
+            posicao_erro = cls.verificar_erro(bloco)
+
+            if posicao_erro:
+                bloco = cls.corrigir_erro(bloco, posicao_erro)
+
+            dados.append(cls.remover_bits_paridade(bloco))
+
+        return "".join(dados)
