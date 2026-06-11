@@ -111,7 +111,8 @@ class hamming:
         # retorna apenas os bits de dados reconstruidos.
 
         cls.validar_entrada_binaria(entrada)
-
+        
+        # Segue a mesma lógica para o erro anterior que tinhamos no encode
         dados = []
         tamanho_completo = len(entrada) - (len(entrada) % cls.TAMANHO_CODEWORD)
         blocos_completos = entrada[:tamanho_completo]
