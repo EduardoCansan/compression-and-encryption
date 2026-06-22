@@ -40,12 +40,3 @@ class repetition_ri:
                 msg_decode += resultado
             # retorna a mensagem recuperada
             return msg_decode
-
-# ============= TESTES =============            
-# ri = repetition_ri()
-
-# encode = ri.encode("10101", 3)
-# print("encode: ", encode)
-
-# decode = ri.decode("111000111000111", 4)
-# print("decode: ", decode)

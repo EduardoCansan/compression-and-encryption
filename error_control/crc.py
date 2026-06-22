@@ -102,34 +102,3 @@ class crc_generator:
 
         # Retorna o resto final da verificação
         return resultado
-
-
-# ============= TESTES =============
-# criado instacia da classe 101100
-# meu_crc = crc_generator()
-
-# crc = meu_crc.calcular_crc("101100")
-# print("CRC FINAL:", crc)
-
-# msg = meu_crc.gerar_mensagem_crc("101100")
-# print("mensagem crc:", msg)
-
-# verificacao = meu_crc.verificar_crc("101100")
-
-
-
-#==================== COMPATIBILIDADE ================
-
-#compatível com os algoritmos de compressão:
-
-# bits = golomb.encode("ABC")
-
-# crc = crc_generator()
-
-# mensagem = crc.gerar_mensagem_crc(bits)
-
-# Ou:
-
-# bits = huffman.encode("ABC")
-
-# mensagem = crc.gerar_mensagem_crc(bits)
