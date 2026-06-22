@@ -3,32 +3,24 @@
 import random
 class error_simulator:
 
-    # inverte apenas um bit da mensagem
-    # entrada: sequência de bits
-    # posicao: posição que será alterada
-    def inverter_bit(self, entrada, posicao):
+    #seleciona os bits manualmente para inverter
+    def inverter_bit(self, entrada, posicoes):
         # verifica se a posição informada existe na mensagem
-        if len(entrada) <= posicao:
-            return "Error: Posicao escolhida é maior que a quantidade de caracteres da entrada!"
-        else:
-            # Guarda o bit da posição escolhida
-            caracter = entrada[posicao]
-            # Inverte o bit - 1 vira 0 e 0 vira 1
-            if caracter == "1":
-                caracter = "0"
+        for posicao in posicoes:
+            if posicao < 0 or posicao >= len(entrada):
+                return "Error!"
+                
+        # converte a string para lista para permitir alterações
+        lista_entrada = list(entrada)
+        
+        for posicao in posicoes:
+            if lista_entrada[posicao] == "1":
+                lista_entrada[posicao] = "0"
             else:
-                caracter = "1"
-
-            # pega a parte da mensagem antes do bit alterado
-            palavra_antes = entrada[:posicao]
-            # pega a parte da mensagem depois do bit alterado
-            palavra_depois = entrada[posicao + 1:]
-            
-            # monta novamente a mensagem com o bit invertido
-            palavra_final = palavra_antes + caracter + palavra_depois
-
-            # retorna a nova mensagem e a posição alterada
-            return palavra_final, posicao
+                lista_entrada[posicao] = "1"
+        
+        nova_msg = "".join(lista_entrada)
+        return nova_msg, posicoes
 
     # insere erros em posições aleatórias da mensagem
     #entrada: sequência de bits
@@ -37,25 +29,24 @@ class error_simulator:
         # verifica se a quantidade de erros é maior que a mensagem
         if len(entrada) < quantidade:
             return "Error: Quantidade de posicoes escolhida, maior que a quantidade de caracteres da entrada"
-        else:
-            # sorteia posições aleatórias sem repetir
-            posicoes = random.sample(range(len(entrada)), quantidade)
+        # sorteia posições aleatórias sem repetir
+        posicoes = random.sample(range(len(entrada)), quantidade)
 
-            # converte a string para lista para permitir alterações
-            lista_entrada = list(entrada)
+        # converte a string para lista para permitir alterações
+        lista_entrada = list(entrada)
 
-            # percorre todas as posições sorteadas
-            for i in posicoes:
-                # inverte cada bit escolhido - 1 vira 0 e 0 vira 1
-                if lista_entrada[i] == "1":
-                    lista_entrada[i] = "0"
-                else:
-                    lista_entrada[i] = "1"
+        # percorre todas as posições sorteadas
+        for i in posicoes:
+            # inverte cada bit escolhido - 1 vira 0 e 0 vira 1
+            if lista_entrada[i] == "1":
+                lista_entrada[i] = "0"
+            else:
+                lista_entrada[i] = "1"
 
-            # junta novamente todos os bits em uma string
-            nova_msg = "".join(lista_entrada)
-            # retorna a mensagem modificada e as posições alteradas
-            return nova_msg, posicoes
+        # junta novamente todos os bits em uma string
+        nova_msg = "".join(lista_entrada)
+        # retorna a mensagem modificada e as posições alteradas
+        return nova_msg, posicoes
 
 
 # ============= TESTES =============

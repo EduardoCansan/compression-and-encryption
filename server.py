@@ -113,14 +113,14 @@ while True:
 # Cria o objeto responsável por simular alterações nos bits transmitidos.
             simulator = error_simulator()
 
-# No modo manual, inverte exatamente o bit escolhido pelo usuário.
+# No modo manual, inverte os bits escolhido pelo usuário.
             if transmission_mode == "2":
-                simulation = simulator.inverter_bit(result, payload.get("error_position"))
+                simulation = simulator.inverter_bit(result, payload.get("error_positions"))
 # Uma string retornada pelo simulador representa uma mensagem de erro.
                 if isinstance(simulation, str):
                     raise ValueError(simulation)
-                result, position = simulation
-                details["changed_positions"] = [position]
+                result, positions = simulation
+                details["changed_positions"] = positions
 # No modo aleatório, altera a quantidade de bits solicitada.
             elif transmission_mode == "3":
                 simulation = simulator.inserir_erros_aleatorios(result, payload.get("error_quantity"))

@@ -155,10 +155,11 @@ def handle_action(action: str):
 
         transmission_data["transmission_mode"] = transmission_mode
 
-        # no modo manual, solicita a posição exata do bit que será invertido.
+        # no modo manual, solicita a posição exata dos bits que serao invertidos.
         if transmission_mode == "2":
             try:
-                transmission_data["error_position"] = int(input("\nEnter the position of the bit to invert: "))
+                posicoes = input("\nEnter the positions of the bits to invert (ex: 2 4 5): ").split()
+                transmission_data["error_positions"] = [int(posicao) for posicao in posicoes]
             except ValueError:
                 console.print("\n[bold red]Invalid number![/bold red]")
                 return None
