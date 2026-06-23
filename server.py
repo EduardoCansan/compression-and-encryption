@@ -60,7 +60,10 @@ while True:
         if payload.get("repeticao") is not None:
             print(f"(Client) Repetition: {payload.get('repeticao')}")
         if payload.get("transmission_mode") is not None:
-            print(f"(Client) Transmission Mode: {auxiliar.TRANSMISSION_MODE_NAMES.get(payload.get('transmission_mode'))}")
+            if error_method == "3":
+                print(f"(Client) Transmission Mode: Automatic")
+            else:
+                print(f"(Client) Transmission Mode: {auxiliar.TRANSMISSION_MODE_NAMES.get(payload.get('transmission_mode'))}")
         print(f"(Client) Text: {payload.get('text', '')}")
 
         # Separa os campos principais usados nas próximas etapas.
