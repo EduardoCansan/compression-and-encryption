@@ -22,7 +22,7 @@ class repetition_ri:
     def decode(self, entrada, repeticao):
         # Verifica se a mensagem pode ser dividida corretamente
         if len(entrada) % repeticao != 0:
-            return "O valor do numero da repeticao, precisa ser divisivel pela \nquantidade de caracteres da codeword"
+            return "The value of the repetition number needs to be divisible by the number of characters in the codeword"
         else:
             # variavel da mensagem recuperada
             msg_decode = ""

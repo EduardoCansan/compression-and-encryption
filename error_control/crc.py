@@ -94,11 +94,11 @@ class crc_generator:
 
         # Se o resto for vazio ou só tiver zeros, a mensagem é considerada válida
         if len(resultado) == 0 or set(resultado) == {"0"}:
-            print("CRC VALIDO")
+            print("VALID CRC")
         else:
             # Caso contrário, houve erro na transmissão ou no conteúdo
-            print("ERRO DETECTADO")
-            print("Resto:", resultado)
+            print("ERROR DETECTED")
+            print("Remainder:", resultado)
 
         # Retorna o resto final da verificação
         return resultado

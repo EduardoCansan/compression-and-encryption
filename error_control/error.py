@@ -28,7 +28,8 @@ class error_simulator:
     def inserir_erros_aleatorios(self, entrada, quantidade):
         # verifica se a quantidade de erros é maior que a mensagem
         if len(entrada) < quantidade:
-            return "Error: Quantidade de posicoes escolhida, maior que a quantidade de caracteres da entrada"
+            return "Error: The number of positions chosen is greater than the number of characters in the input"
+
         # sorteia posições aleatórias sem repetir
         posicoes = random.sample(range(len(entrada)), quantidade)
 

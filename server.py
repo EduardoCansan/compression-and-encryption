@@ -42,15 +42,15 @@ while True:
         servidor.close()
         break
     
-# Protege o servidor contra JSON inválido e erros esperados no processamento.
+    # Protege o servidor contra JSON inválido e erros esperados no processamento.
     try:
-# Converte o texto JSON recebido em um dicionário Python.
+        # Converte o texto JSON recebido em um dicionário Python.
         payload = json.loads(mensagem)
-# Obtém os identificadores dos métodos escolhidos pelo cliente.
+        # Obtém os identificadores dos métodos escolhidos pelo cliente.
         method = payload.get("method")
         error_method = payload.get("error_method")
 
-# Registra no terminal os dados recebidos para acompanhar a requisição.
+        # Registra no terminal os dados recebidos para acompanhar a requisição.
         print(f"\n(Client) Action: {payload.get('action')}")
         print(f"(Client) Method: {auxiliar.METHOD_NAMES.get(method, method)}")
         if error_method is not None:
@@ -63,16 +63,16 @@ while True:
             print(f"(Client) Transmission Mode: {auxiliar.TRANSMISSION_MODE_NAMES.get(payload.get('transmission_mode'))}")
         print(f"(Client) Text: {payload.get('text', '')}")
 
-# Separa os campos principais usados nas próximas etapas.
+        # Separa os campos principais usados nas próximas etapas.
         action = payload.get("action")
         text = payload.get("text", "")
-# details reúne resultados intermediários que serão mostrados pelo cliente.
+        # details reúne resultados intermediários que serão mostrados pelo cliente.
         details = {}
 
-# Fluxo Decode:
-# Mensagem recebida -> Verificação/correção de erro -> Remoção da proteção -> Decodificação
+        # Fluxo Decode:
+        # Mensagem recebida -> Verificação/correção de erro -> Remoção da proteção -> Decodificação
         if action == "Decode":
-# Verifica ou remove o controle de erro antes de descomprimir a mensagem.
+            # Verifica ou remove o controle de erro antes de descomprimir a mensagem.
             text = auxiliar.process_error_control(
                 action,
                 error_method,
@@ -85,57 +85,57 @@ while True:
             elif error_method == "2":
                 details["verification_result"] = "Repetition decoding applied"
 
-# Executa Encode ou Decode usando o método de compressão selecionado.
+        # Executa Encode ou Decode usando o método de compressão selecionado.
         result = auxiliar.process_request(action, method, text, payload.get("k"))
 
-# Fluxo Encode:
-# Texto -> Compressão -> Controle de erro -> Simulação de erro
+        # Fluxo Encode:
+        # Texto -> Compressão -> Controle de erro -> Simulação de erro
         if action == "Encode":
-# Guarda a palavra-código produzida pela compressão.
+            # Guarda a palavra-código produzida pela compressão.
             details["codeword"] = result
             codeword = result
-# Acrescenta à palavra-código a proteção do método de controle de erro.
+            # Acrescenta à palavra-código a proteção do método de controle de erro.
             result = auxiliar.process_error_control(
                 action,
                 error_method,
                 result,
                 payload.get("repeticao"),
             )
-# No CRC, os bits adicionados ficam após a palavra-código original.
+            # No CRC, os bits adicionados ficam após a palavra-código original.
             if error_method == "1":
                 details["crc"] = result[len(codeword):]
 
-# Guarda a mensagem antes de qualquer erro de transmissão ser simulado.
+            # Guarda a mensagem antes de qualquer erro de transmissão ser simulado.
             details["protected_message"] = result
             transmission_mode = payload.get("transmission_mode", "1")
             if error_method == "3":
                 transmission_mode = "1"
-# Cria o objeto responsável por simular alterações nos bits transmitidos.
+                # Cria o objeto responsável por simular alterações nos bits transmitidos.
             simulator = error_simulator()
 
-# No modo manual, inverte os bits escolhido pelo usuário.
+            # No modo manual, inverte os bits escolhido pelo usuário.
             if transmission_mode == "2":
                 simulation = simulator.inverter_bit(result, payload.get("error_positions"))
-# Uma string retornada pelo simulador representa uma mensagem de erro.
+                # Uma string retornada pelo simulador representa uma mensagem de erro.
                 if isinstance(simulation, str):
                     raise ValueError(simulation)
                 result, positions = simulation
                 details["changed_positions"] = positions
-# No modo aleatório, altera a quantidade de bits solicitada.
+                # No modo aleatório, altera a quantidade de bits solicitada.
             elif transmission_mode == "3":
                 simulation = simulator.inserir_erros_aleatorios(result, payload.get("error_quantity"))
                 if isinstance(simulation, str):
                     raise ValueError(simulation)
                 result, positions = simulation
                 details["changed_positions"] = positions
-        # Server não mostra a resposta ainda
-        # print(f"\n(Server) Result: {result}")
-# Monta a resposta de sucesso com o resultado final e os detalhes intermediários.
+                # Server não mostra a resposta ainda
+                # print(f"\n(Server) Result: {result}")
+        # Monta a resposta de sucesso com o resultado final e os detalhes intermediários.
         response = {"ok": True, "result": result, "details": details}
-# Converte falhas conhecidas em uma resposta que o cliente consegue exibir.
+    # Converte falhas conhecidas em uma resposta que o cliente consegue exibir. 
     except (json.JSONDecodeError, ValueError) as e:
         print(f"\n(Server) Error: {e}")
         response = {"ok": False, "error": str(e)}
 
-# Converte o dicionário de resposta para JSON, transforma em bytes e envia ao cliente.
+    # Converte o dicionário de resposta para JSON, transforma em bytes e envia ao cliente.
     cliente.send(json.dumps(response).encode())

@@ -10,7 +10,7 @@ class Golomb:
         #! CODIFICACAO
 
         if k < 1 or (k & (k - 1)) != 0:
-            raise ValueError("K precisa ser potencia de 2")
+            raise ValueError("K must be a power of 2")
 
         decimal_text = cls._text_to_decimals(symbol_str)
         encodes = []
@@ -67,7 +67,7 @@ class Golomb:
         #! DECODIFICACAO
 
         if k < 1 or (k & (k - 1)) != 0:
-            raise ValueError("K precisa ser potencia de 2")
+            raise ValueError("K must be a power of 2")
 
         #* Inputs: bits
         caracteres_permitidos = set("01")

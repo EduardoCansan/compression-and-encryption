@@ -11,11 +11,11 @@ class hamming:
     def validar_entrada_binaria(entrada):
         # Se é vazia
         if not entrada:
-            raise ValueError("A entrada nao pode ser vazia.")
+            raise ValueError("The entrance cannot be empty.")
 
         # Se tem caracteres diferentes de 0 e 1
         if any(bit not in "01" for bit in entrada):
-            raise ValueError("A entrada precisa conter apenas 0 e 1.")
+            raise ValueError("The input must contain only 0 and 1.")
 
     # Metodo para calcular o XOR de uma lista de bits (0 e 1)
     @staticmethod
@@ -91,7 +91,7 @@ class hamming:
     @classmethod
     def corrigir_erro(cls, entrada, posicao):
         if posicao < 1 or posicao > cls.TAMANHO_CODEWORD:
-            raise ValueError("Posicao de erro invalida.")
+            raise ValueError("Invalid error position.")
 
         bits = list(entrada)
         indice = posicao - 1
