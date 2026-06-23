@@ -75,7 +75,10 @@ while True:
             # mostra como a mensagem protegida ficou após a simulação da transmissão.
             print("\n==================== TRANSMISSION ====================")
             print(f"Protected message: {details.get('protected_message')}")
-            print(f"Mode: {auxiliar.TRANSMISSION_MODE_NAMES.get(request.get('transmission_mode'))}")
+            if request.get("error_method") == "3":
+                print("Mode: Automatic")
+            else:
+                print(f"Mode: {auxiliar.TRANSMISSION_MODE_NAMES.get(request.get('transmission_mode'))}")
             
             # posições alteradas só existem quando a simulação introduz erros.
             if details.get("changed_positions") is not None:
